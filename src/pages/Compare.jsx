@@ -42,9 +42,10 @@ export default function Compare() {
   const scoredCities = useMemo(() => scoreAllCities(CITIES, DEFAULT_WEIGHTS), [])
   const cityNames = useMemo(() => scoredCities.map(c => c.name).sort(), [scoredCities])
 
-  const initialCity = searchParams.get('city') || ''
-  const [city1Name, setCity1Name] = useState(initialCity || 'Mumbai')
-  const [city2Name, setCity2Name] = useState('Bengaluru')
+  const [city1Name, setCity1Name] = useState(
+    searchParams.get('c1') || searchParams.get('city') || 'Mumbai'
+  )
+  const [city2Name, setCity2Name] = useState(searchParams.get('c2') || 'Bengaluru')
   const [city3Name, setCity3Name] = useState('None')
 
   const findCity = (name) => scoredCities.find(c => c.name === name)

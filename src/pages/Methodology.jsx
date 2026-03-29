@@ -461,11 +461,54 @@ Range:       0 ≤ DCEI_Score ≤ 100`}
           <section>
             <SectionAnchor id="citation" />
             <h2 className="text-xl font-bold text-white mb-3">10. Citation</h2>
-            <div className="mt-2 p-4 bg-[rgba(14,165,233,0.06)] border border-sky-500/20 rounded-xl text-sm text-slate-300">
-              Citation: This framework is a research preview. Formal citation will be available upon preprint publication on Zenodo.
+
+            {/* Primary citation block */}
+            <div className="mt-2 p-5 bg-[rgba(14,165,233,0.06)] border border-sky-500/30 rounded-xl">
+              <p className="text-xs font-semibold text-sky-400 uppercase tracking-widest mb-3">Published Research · Zenodo</p>
+              <div className="font-mono text-sm text-slate-200 leading-relaxed bg-[#0a0f1e] border border-slate-700/60 rounded-lg p-4 select-all">
+                Singh, R. (2026). <span className="text-sky-300">DCEI: A Data Center Environmental Impact Index for India</span> —{' '}
+                Quantifying Water, Carbon, Community, and Thermal Risk for AI Infrastructure Siting Across 50 Indian Cities.{' '}
+                <span className="text-emerald-400">Zenodo</span>.{' '}
+                <a
+                  href="https://doi.org/10.5281/zenodo.19298046"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors"
+                >
+                  https://doi.org/10.5281/zenodo.19298046
+                </a>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 font-semibold">
+                  Published
+                </span>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/20">
+                  DOI: 10.5281/zenodo.19298046
+                </span>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-400 border border-violet-500/20">
+                  Open Access · Zenodo
+                </span>
+              </div>
             </div>
-            <div className="mt-6 p-4 bg-[rgba(14,165,233,0.06)] border border-sky-500/20 rounded-xl text-sm text-slate-300">
-              This dashboard is a research preview. All scores, weights, and methodology are
+
+            {/* BibTeX block */}
+            <div className="mt-4">
+              <p className="text-xs text-slate-500 uppercase tracking-widest mb-2 font-semibold">BibTeX</p>
+              <pre className="bg-[#0a0f1e] border border-slate-700/60 rounded-xl p-4 text-xs font-mono text-slate-300 overflow-x-auto leading-relaxed">
+{`@misc{singh2026dcei,
+  author       = {Singh, Rudra},
+  title        = {{DCEI: A Data Center Environmental Impact Index for India}},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.19298046},
+  url          = {https://doi.org/10.5281/zenodo.19298046}
+}`}
+              </pre>
+            </div>
+
+            {/* Research note */}
+            <div className="mt-6 p-4 bg-[rgba(14,165,233,0.04)] border border-sky-500/15 rounded-xl text-sm text-slate-300">
+              This dashboard accompanies the published research. All scores, weights, and methodology are
               subject to revision. Expert feedback from hydrology, electrical engineering, and
               urban planning domains is actively solicited.
               <br /><br />
