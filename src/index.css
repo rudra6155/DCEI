@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────────────────────
-   CSS custom properties — single source of truth
+   CSS custom properties
    ───────────────────────────────────────────────────────────── */
 :root {
   --paper:        #FFFFFF;
@@ -36,34 +36,34 @@
    ───────────────────────────────────────────────────────────── */
 @layer base {
   * { box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
 
   body {
     background: var(--paper);
     color: var(--ink);
-    font-family: 'Space Mono', monospace;
+    /* Exo 2 — the exact geometric font the EDGE game uses */
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400;
+    font-size: 1.0625rem; /* 17px base */
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
 
-  ::selection {
-    background: var(--band-focus);
-    color: var(--ink);
-  }
+  ::selection { background: var(--band-focus); color: var(--ink); }
 
-  /* No border-radius anywhere */
   *, *::before, *::after { border-radius: 0 !important; }
 
+  /* All headings: Exo 2, lowercase, appropriate weight */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Micro 5', 'Pixelify Sans', monospace;
-    font-weight: 400;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
     text-transform: lowercase;
+    line-height: 1.1;
   }
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Viewport frame — fixed rainbow border around the entire screen
+   Viewport frame — fixed rainbow border (EDGE game signature)
    ───────────────────────────────────────────────────────────── */
 .viewport-frame {
   position: fixed;
@@ -75,8 +75,8 @@
     linear-gradient(var(--paper), var(--paper)) padding-box,
     repeating-linear-gradient(
       to right,
-      #FDA9B8 0px,  #FDA9B8 8px,
-      #D3A9FD 8px,  #D3A9FD 16px,
+      #FDA9B8 0px, #FDA9B8 8px,
+      #D3A9FD 8px, #D3A9FD 16px,
       #BEB8FE 16px, #BEB8FE 24px,
       #4AB0E8 24px, #4AB0E8 32px,
       #5EFB90 32px, #5EFB90 40px,
@@ -87,41 +87,42 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Page header bar — full-width gray bar with lowercase title
+   Page header bar — exactly like the EDGE game header bars
+   (#7D7D7D bg, white Exo 2, lowercase, ~40px height)
    ───────────────────────────────────────────────────────────── */
 .page-header-bar {
   width: 100%;
   background: var(--bar);
   color: var(--paper);
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 1rem;
-  font-weight: 400;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.375rem;   /* 22px — matches game header text scale */
+  font-weight: 700;
   text-transform: lowercase;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.25rem;
   border-bottom: 2px solid var(--ink);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Floor header bar — inline section divider (same style as page-header-bar)
+   Floor header bar — section divider within Landing page
+   Same visual as page-header-bar, slightly larger
    ───────────────────────────────────────────────────────────── */
 .floor-bar {
   width: 100%;
   background: var(--bar);
   color: var(--paper);
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 1.125rem;
-  font-weight: 400;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.5rem;     /* 24px */
+  font-weight: 700;
   text-transform: lowercase;
-  padding: 0.625rem 1rem;
+  padding: 0.75rem 1.25rem;
   border-top: 2px solid var(--ink);
   border-bottom: 2px solid var(--ink);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.01em;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Panel — rectangle, 1px ink border, paper background
-   No shadows — BANNED per correction doc
+   Panel — 1px ink border, paper background, no shadows
    ───────────────────────────────────────────────────────────── */
 .panel {
   background: var(--paper);
@@ -136,15 +137,17 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Menu row — plain text row; .active = band-primary full-bleed
+   Menu row — matches EDGE game menu rows exactly
+   Large text, full-width, highlighted row = band-primary
    ───────────────────────────────────────────────────────────── */
 .menu-row {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0.75rem 1rem;
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 1rem;
+  padding: 1rem 1.25rem;       /* tall rows like the game */
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.375rem;          /* 22px — game menu text size */
+  font-weight: 600;
   text-transform: lowercase;
   color: var(--ink);
   background: var(--paper);
@@ -153,11 +156,10 @@
   transition: background 120ms linear;
   text-decoration: none;
   user-select: none;
+  letter-spacing: 0.01em;
 }
 
-.menu-row:hover {
-  background: var(--paper-2);
-}
+.menu-row:hover { background: var(--paper-2); }
 
 .menu-row.active,
 .menu-row[data-active="true"] {
@@ -167,16 +169,18 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Options row — label left, value right; mint band when focused
+   Options row — label left, value right (EDGE options screen)
+   Mint band on focus/selected
    ───────────────────────────────────────────────────────────── */
 .options-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.75rem 1rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.25rem;           /* 20px */
+  font-weight: 400;
   color: var(--ink);
   background: var(--paper);
   border-bottom: 1px solid var(--paper-2);
@@ -191,46 +195,52 @@
 }
 
 .options-row__label {
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 0.875rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
   text-transform: lowercase;
   color: var(--ink);
 }
 
 .options-row__value {
   font-family: 'Space Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 1.125rem;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Level-done row — label/value pair in the result table style
+   Result row — level-done style: label left, value right
+   Yellow highlight row for totals
    ───────────────────────────────────────────────────────────── */
 .result-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--paper-2);
   background: var(--paper);
 }
 
+.result-row:last-child { border-bottom: none; }
+
 .result-row.highlight {
   background: var(--select);
+  font-weight: 700;
 }
 
 .result-row__label {
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 0.875rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.0625rem;          /* 17px */
+  font-weight: 600;
   text-transform: lowercase;
   color: var(--ink);
 }
 
 .result-row__value {
   font-family: 'Space Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 1rem;               /* 16px */
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -245,20 +255,18 @@
 }
 
 .seg-meter__segment {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: var(--paper-2);
   border: 1px solid var(--ink);
   flex-shrink: 0;
   transition: background 120ms steps(1);
 }
 
-.seg-meter__segment.filled {
-  background: var(--risk-moderate);
-}
+.seg-meter__segment.filled { background: var(--risk-moderate); }
 
 /* ─────────────────────────────────────────────────────────────
-   Score readout — large mono number in ink panel
+   Score readout — large mono number
    ───────────────────────────────────────────────────────────── */
 .score-readout {
   display: inline-flex;
@@ -279,15 +287,16 @@
 }
 
 .score-readout__label {
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 0.75rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 400;
   text-transform: lowercase;
   color: var(--ink-soft);
   margin-top: 0.25rem;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Level tile — square city tile for grid view
+   Level tile — square city tile (scores screen)
    ───────────────────────────────────────────────────────────── */
 .level-tile {
   position: relative;
@@ -304,13 +313,8 @@
   user-select: none;
 }
 
-.level-tile:hover {
-  background: var(--paper-2);
-}
-
-.level-tile.selected {
-  background: var(--select);
-}
+.level-tile:hover  { background: var(--paper-2); }
+.level-tile.selected { background: var(--select); }
 
 .level-tile__pip {
   position: absolute;
@@ -321,47 +325,44 @@
 }
 
 .level-tile__number {
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 1rem;
-  font-weight: 400;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
   color: var(--ink);
   line-height: 1;
 }
 
 .level-tile__name {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.5rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.5625rem;
+  font-weight: 400;
   color: var(--ink-soft);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: clip;
 }
 
-/* Estimated confidence = diagonal half-shade */
+/* Estimated = diagonal half-shade */
 .level-tile.estimated::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent 50%,
-    var(--paper-2) 50%
-  );
+  background: linear-gradient(135deg, transparent 50%, var(--paper-2) 50%);
   pointer-events: none;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Dashed button — pastel fill, dashed ink border
-   No glow — BANNED per correction doc
+   Dashed button — pastel fill, dashed border
+   Matches EDGE game "back", "credits", "retry", "next" buttons
    ───────────────────────────────────────────────────────────── */
 .dashed-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.625rem 1.25rem;
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 0.875rem;
-  font-weight: 400;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.125rem;           /* 18px — matches game button text */
+  font-weight: 600;
   text-transform: lowercase;
   color: var(--ink);
   background: var(--btn-neutral, #EDEDEB);
@@ -370,22 +371,15 @@
   text-decoration: none;
   transition: background 120ms linear;
   user-select: none;
-  min-height: 44px;
-  min-width: 80px;
-  position: relative;
+  min-height: 48px;
+  min-width: 100px;
+  letter-spacing: 0.01em;
 }
 
-.dashed-btn:hover {
-  background: var(--paper-2);
-}
+.dashed-btn:hover { background: var(--paper-2); }
 
-.dashed-btn.primary {
-  background: var(--band-primary);
-}
-
-.dashed-btn.primary:hover {
-  background: #C490F0;
-}
+.dashed-btn.primary { background: var(--band-primary); }
+.dashed-btn.primary:hover { background: #C490F0; }
 
 .dashed-btn:focus-visible {
   outline: 2px solid var(--ink);
@@ -398,11 +392,12 @@
 .band-cta {
   display: block;
   width: 100%;
-  padding: 1rem;
+  padding: 1rem 1.25rem;
   background: var(--band-primary);
   color: var(--ink);
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 1rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
   text-transform: lowercase;
   text-decoration: none;
   text-align: left;
@@ -411,26 +406,26 @@
   cursor: pointer;
   transition: background 120ms linear;
   user-select: none;
-  min-height: 44px;
+  min-height: 48px;
 }
 
-.band-cta:hover {
-  background: #C490F0;
-}
+.band-cta:hover { background: #C490F0; }
 
 /* ─────────────────────────────────────────────────────────────
-   Footer strip — dark bar at page bottom
+   Footer strip — dark bar at bottom
    ───────────────────────────────────────────────────────────── */
 .footer-strip {
   width: 100%;
   background: var(--footer-strip);
   color: var(--paper);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.625rem;
-  padding: 0.5rem 1rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 300;
+  padding: 0.5rem 1.25rem;
   border-top: 2px solid var(--ink);
   overflow: hidden;
   white-space: nowrap;
+  letter-spacing: 0.05em;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -452,76 +447,62 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Page transition — 150ms linear
+   Page transition
    ───────────────────────────────────────────────────────────── */
-.page-transition {
-  min-height: 100dvh;
-}
+.page-transition { min-height: 100dvh; }
 
 /* ─────────────────────────────────────────────────────────────
-   Table styles
+   Table styles (Explorer / Compare)
    ───────────────────────────────────────────────────────────── */
 .dc-table {
   width: 100%;
   border-collapse: collapse;
   font-family: 'Space Mono', monospace;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
 }
 
 .dc-table th {
   background: var(--bar);
   color: var(--paper);
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
   text-transform: lowercase;
-  padding: 0.5rem 0.75rem;
+  padding: 0.625rem 0.75rem;
   text-align: left;
   border-bottom: 2px solid var(--ink);
   white-space: nowrap;
 }
 
 .dc-table td {
-  padding: 0.5rem 0.75rem;
+  padding: 0.5625rem 0.75rem;
   border-bottom: 1px solid var(--paper-2);
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 
-.dc-table tr:nth-child(even) td {
-  background: var(--paper-2);
-}
-
-.dc-table tr.selected td {
-  background: var(--select);
-}
-
-.dc-table tr:hover td {
-  background: var(--paper-3);
-}
-
-.dc-table tr.selected:hover td {
-  background: #F0C870;
-}
+.dc-table tr:nth-child(even) td { background: var(--paper-2); }
+.dc-table tr.selected td { background: var(--select); }
+.dc-table tr:hover td { background: var(--paper-3); }
+.dc-table tr.selected:hover td { background: #F0C870; }
 
 /* ─────────────────────────────────────────────────────────────
-   Risk square chip (replaces rounded badge)
+   Risk chip
    ───────────────────────────────────────────────────────────── */
 .risk-chip {
   display: inline-flex;
   align-items: center;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border: 1px solid currentColor;
-  font-family: 'Micro 5', 'Pixelify Sans', monospace;
-  font-size: 0.625rem;
-  font-weight: 400;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: lowercase;
-  letter-spacing: 0;
   white-space: nowrap;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Isometric SVG global settings
+   Isometric SVG
    ───────────────────────────────────────────────────────────── */
 .iso-svg {
   shape-rendering: crispEdges;
@@ -530,11 +511,11 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Leaflet overrides — light theme, no shadow
+   Leaflet overrides
    ───────────────────────────────────────────────────────────── */
 .leaflet-container {
   background: var(--paper) !important;
-  font-family: 'Space Mono', monospace !important;
+  font-family: 'Exo 2', sans-serif !important;
 }
 
 .leaflet-popup-content-wrapper {
@@ -544,9 +525,7 @@
   box-shadow: none !important;
 }
 
-.leaflet-popup-tip {
-  background: var(--ink) !important;
-}
+.leaflet-popup-tip { background: var(--ink) !important; }
 
 .leaflet-popup-close-button {
   color: var(--ink-soft) !important;
@@ -566,19 +545,14 @@
   background: var(--paper) !important;
   color: var(--ink) !important;
   border-color: var(--ink) !important;
-  font-family: 'Micro 5', 'Pixelify Sans', monospace !important;
+  font-family: 'Exo 2', sans-serif !important;
 }
 
-.leaflet-control-zoom a:hover {
-  background: var(--paper-2) !important;
-}
-
-.leaflet-tile-pane {
-  filter: none;
-}
+.leaflet-control-zoom a:hover { background: var(--paper-2) !important; }
+.leaflet-tile-pane { filter: none; }
 
 /* ─────────────────────────────────────────────────────────────
-   Recharts overrides — ink colors
+   Recharts overrides
    ───────────────────────────────────────────────────────────── */
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical line {
@@ -595,12 +569,10 @@
   font-size: 11px !important;
 }
 
-.recharts-tooltip-wrapper {
-  outline: none !important;
-}
+.recharts-tooltip-wrapper { outline: none !important; }
 
 /* ─────────────────────────────────────────────────────────────
-   Range input — minimal ink style
+   Range input
    ───────────────────────────────────────────────────────────── */
 input[type="range"] {
   -webkit-appearance: none;
@@ -644,8 +616,8 @@ select {
   background: var(--paper);
   border: 1px solid var(--ink);
   color: var(--ink);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.875rem;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1rem;
   padding: 0.5rem 2rem 0.5rem 0.75rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%233B3B3B' d='M0 0h2v2H0zm2 2h2v2H2zm2 2h2v2H4zm2-2h2v2H6zm2-2h2v2H8z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -659,7 +631,7 @@ select:focus-visible {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Scrollbar — thin, ink-colored
+   Scrollbar
    ───────────────────────────────────────────────────────────── */
 .scrollbar-thin {
   scrollbar-width: thin;
@@ -682,14 +654,14 @@ select:focus-visible {
   border: 1px solid var(--ink);
   padding: 1rem;
   font-family: 'Space Mono', monospace;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: var(--ink);
   white-space: pre-wrap;
   overflow-x: auto;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Focus visible — mint band outline
+   Focus visible
    ───────────────────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--band-focus);
@@ -709,10 +681,5 @@ select:focus-visible {
 /* ─────────────────────────────────────────────────────────────
    Safe area insets
    ───────────────────────────────────────────────────────────── */
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-.safe-top {
-  padding-top: env(safe-area-inset-top, 0px);
-}
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.safe-top    { padding-top: env(safe-area-inset-top, 0px); }

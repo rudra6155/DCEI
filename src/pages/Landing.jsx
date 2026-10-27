@@ -5,7 +5,6 @@ import Panel from '../components/Panel.jsx'
 import DashedBtn from '../components/DashedBtn.jsx'
 import SegMeter from '../components/SegMeter.jsx'
 import PixelGlyph from '../components/PixelGlyph.jsx'
-import IsoBlock from '../components/iso/IsoBlock.jsx'
 import IsoCube from '../components/iso/IsoCube.jsx'
 import { CITIES } from '../data/cities.js'
 import { scoreAllCities, DEFAULT_WEIGHTS } from '../data/scoring.js'
@@ -61,66 +60,31 @@ function TypingText({ text, delay = 0, speed = 50, onComplete }) {
   )
 }
 
-// ─── Isometric DCEI letter bitmaps: 3 wide × 5 tall, row 0 = top ─
-const LETTER_BITS = {
-  D: [[1,1,0],[1,0,1],[1,0,1],[1,0,1],[1,1,0]],
-  C: [[0,1,1],[1,0,0],[1,0,0],[1,0,0],[0,1,1]],
-  E: [[1,1,1],[1,0,0],[1,1,0],[1,0,0],[1,1,1]],
-  I: [[1,1,1],[0,1,0],[0,1,0],[0,1,0],[1,1,1]],
-}
-const LETTER_SEQ = ['D','C','E','I']
-const LTR_W   = 3  // columns per letter
-const LTR_GAP = 1  // gap columns between letters
-
-function TitleStage() {
-  const U      = 10
-  const baseCx = 20
-  const baseCy = 100
-
-  const blocks = useMemo(() => {
-    const result = []
-    LETTER_SEQ.forEach((letter, li) => {
-      const startGx = li * (LTR_W + LTR_GAP)
-      LETTER_BITS[letter].forEach((row, rowIdx) => {
-        const gz = 4 - rowIdx  // row 0 = top → gz=4
-        row.forEach((filled, colIdx) => {
-          if (!filled) return
-          const gx = startGx + colIdx
-          const cx = baseCx + gx * U
-          const cy = baseCy + gx * (U / 2) - gz * U
-          result.push({ cx, cy, gx, gz, key: `${letter}-${rowIdx}-${colIdx}` })
-        })
-      })
-    })
-    // Painter's algorithm: smaller gx+gz renders first (further back)
-    return result.sort((a, b) => (a.gx + a.gz) - (b.gx + b.gz))
-  }, [])
-
-  // Purple cube hovers at gx=6 (right edge of C), gz=6 (one above letter tops)
-  const cubeCx = baseCx + 6 * U                         // 80
-  const cubeCy = baseCy + 6 * (U / 2) - 6 * U           // 70
-
+// ─── Title hero — "level 01" style dark band with big Exo 2 text ─
+function TitleHero() {
   return (
-    <svg
-      viewBox="0 0 200 190"
-      className="iso-svg w-full"
-      style={{ maxWidth: 280, height: 'auto' }}
-      aria-label="DCEI block letters"
-    >
-      {blocks.map(b => (
-        <IsoBlock
-          key={b.key}
-          cx={b.cx} cy={b.cy}
-          size={U}
-          topColor="#D2D2D2"
-          leftColor="#A9A9A9"
-          rightColor="#BCBCBC"
-          stroke="#3B3B3B"
-          strokeWidth={0.5}
-        />
-      ))}
-      <IsoCube cx={cubeCx} cy={cubeCy} size={U} />
-    </svg>
+    <div className="w-full bg-[#3C3C3C] px-5 pt-7 pb-5 flex items-start justify-between gap-4">
+      <div className="flex-1 min-w-0">
+        <h1
+          className="font-exo font-black leading-none tracking-tight"
+          style={{ fontSize: 'clamp(3.5rem, 13vw, 6.5rem)', color: '#C7F439' }}
+        >
+          dcei
+        </h1>
+        <p
+          className="font-exo font-light mt-1 leading-snug"
+          style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1rem)', color: '#A9A9A9', letterSpacing: '0.03em' }}
+        >
+          data center environmental impact
+        </p>
+      </div>
+      {/* Rolling purple IsoCube as visual accent */}
+      <div className="flex-shrink-0 self-center">
+        <svg viewBox="0 0 88 76" style={{ width: 88, height: 76 }} aria-hidden="true">
+          <IsoCube cx={44} cy={68} size={32} />
+        </svg>
+      </div>
+    </div>
   )
 }
 
@@ -168,14 +132,16 @@ export default function Landing() {
       {/* ═══════════════════════════════════════════════
           SCENE 1: Title Stage
       ═══════════════════════════════════════════════ */}
-      <Scene className="min-h-dvh bg-paper flex flex-col items-center justify-center px-4" id="scene1">
-        <div className="flex flex-col items-center gap-6 w-full max-w-lg text-center">
+      <Scene className="min-h-dvh bg-paper flex flex-col" id="scene1">
 
-          {/* Isometric DCEI block letters + rolling purple cube */}
-          <TitleStage />
+        {/* Dark title band — "level 01" style */}
+        <TitleHero />
+
+        {/* Content area */}
+        <div className="flex-1 flex flex-col px-5 py-6 space-y-5 max-w-2xl">
 
           {/* Chat bubble */}
-          <div className="relative w-full max-w-lg">
+          <div className="relative w-full">
             <AnimatePresence mode="wait">
               {chatPhase === 'typing' && (
                 <motion.div
@@ -185,14 +151,14 @@ export default function Landing() {
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.16 }}
                 >
-                  <Panel className="p-4 text-left">
+                  <Panel className="p-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 border border-ink bg-paper-2 flex-shrink-0 flex items-center justify-center font-pixel text-xs text-ink">
+                      <div className="w-9 h-9 border border-ink bg-paper-2 flex-shrink-0 flex items-center justify-center font-exo font-bold text-sm text-ink">
                         U
                       </div>
                       <div className="flex-1">
                         <p className="font-mono text-[10px] text-ink-soft mb-1">You · just now</p>
-                        <p className="font-mono text-sm text-ink leading-relaxed">
+                        <p className="font-exo text-base text-ink leading-relaxed">
                           <TypingText
                             text="Hey Claude, will AI take my job?"
                             delay={400}
@@ -211,20 +177,20 @@ export default function Landing() {
               {chatPhase === 'sent' && (
                 <motion.div
                   key="sent"
-                  className="flex items-center justify-center gap-2 py-4"
+                  className="flex items-center gap-2 py-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.16 }}
                 >
                   <PixelGlyph name="check" size={12} color="#60C860" />
-                  <span className="font-mono text-sm text-ink">Message sent — processing query…</span>
+                  <span className="font-exo text-base text-ink">Message sent — processing query…</span>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Subtitle */}
+          {/* Subtitle — shown after typing completes */}
           <AnimatePresence>
             {chatPhase === 'subtitle' && (
               <motion.div
@@ -234,16 +200,17 @@ export default function Landing() {
                 transition={{ duration: 0.18 }}
                 className="space-y-4 w-full"
               >
-                <h1 className="font-pixel text-2xl sm:text-3xl text-ink leading-snug">
+                <p className="font-exo font-bold text-ink leading-snug"
+                  style={{ fontSize: 'clamp(1.5rem, 4.5vw, 2.25rem)' }}>
                   Every AI query has a{' '}
                   <span style={{ color: '#9D55FF' }}>hidden cost.</span>
                   <br />
                   Let us show you.
-                </h1>
-                <p className="font-mono text-sm text-ink-soft">
+                </p>
+                <p className="font-exo font-light text-ink-soft" style={{ fontSize: '1.0625rem' }}>
                   One message. 1.2 L of water. 4.2 g of CO₂. Multiplied by 8.5 billion queries a day.
                 </p>
-                <div className="flex flex-wrap gap-3 justify-center mt-4">
+                <div className="flex flex-wrap gap-3 mt-2">
                   <Link to="/explorer" className="no-underline">
                     <DashedBtn variant="lavender">Explore DCEI Dashboard</DashedBtn>
                   </Link>
@@ -256,15 +223,15 @@ export default function Landing() {
           </AnimatePresence>
 
           {chatPhase === 'typing' && (
-            <p className="font-mono text-xs text-ink-soft">
+            <p className="font-exo font-light text-ink-soft" style={{ fontSize: '0.9375rem' }}>
               Researching the environmental footprint of India's data center boom
             </p>
           )}
+        </div>
 
-          {/* Scroll hint */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-            <PixelGlyph name="sort" size={12} color="#7D7D7D" />
-          </div>
+        {/* Scroll hint */}
+        <div className="flex justify-center pb-6">
+          <PixelGlyph name="sort" size={12} color="#7D7D7D" />
         </div>
       </Scene>
 
