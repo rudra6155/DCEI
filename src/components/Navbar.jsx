@@ -1,167 +1,128 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import PixelGlyph from './PixelGlyph.jsx'
 
 const NAV_LINKS = [
-  { to: '/explorer', label: 'Explorer', icon: '🗺️' },
-  { to: '/compare', label: 'Compare', icon: '⚖️' },
-  { to: '/sensitivity', label: 'Sensitivity', icon: '🎚️' },
-  { to: '/alternatives', label: 'Alternatives', icon: '🔄' },
-  { to: '/methodology', label: 'Methodology', icon: '📐' },
+  { to: '/explorer',     label: 'Explorer',     glyph: 'city'    },
+  { to: '/compare',      label: 'Compare',      glyph: 'compare' },
+  { to: '/sensitivity',  label: 'Sensitivity',  glyph: 'filter'  },
+  { to: '/alternatives', label: 'Alternatives', glyph: 'sort'    },
+  { to: '/methodology',  label: 'Methodology',  glyph: 'chart'   },
 ]
 
 export default function Navbar() {
-  const location = useLocation()
-  const isLanding = location.pathname === '/'
-  const [scrolled, setScrolled] = useState(false)
+  const location   = useLocation()
+  const isLanding  = location.pathname === '/'
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   // Close mobile menu on route change
-  useEffect(() => {
-    setMobileOpen(false)
-  }, [location.pathname])
-
-  const showGlass = !isLanding || scrolled
+  useEffect(() => { setMobileOpen(false) }, [location.pathname])
 
   return (
     <>
-      <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style={{
-          background: showGlass ? 'rgba(10,15,30,0.85)' : 'transparent',
-          backdropFilter: showGlass ? 'blur(16px)' : 'none',
-          WebkitBackdropFilter: showGlass ? 'blur(16px)' : 'none',
-          borderBottom: showGlass ? '1px solid rgba(255,255,255,0.06)' : 'none',
-        }}
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 bg-bar border-b border-ink"
+        style={{ height: '40px' }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 no-underline group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold shadow-lg">
-                DC
-              </div>
-              <span className="text-gradient font-bold text-xl tracking-tight">DCEI</span>
-              <span className="text-slate-600 text-xs hidden sm:block">Framework</span>
-            </Link>
+        <div className="max-w-7xl mx-auto px-3 flex items-center justify-between h-full">
+          {/* Logo */}
+          <Link
+            to="/"
+            className="font-pixel text-white text-sm tracking-widest no-underline hover:text-band-focus transition-colors duration-120 ease-step-1"
+          >
+            DCEI
+          </Link>
 
-            {/* Desktop nav */}
-            <div className="hidden md:flex items-center gap-1">
-              {!isLanding && NAV_LINKS.map(link => {
-                const active = location.pathname === link.to
+          {/* Desktop nav — only shown on dashboard pages */}
+          {!isLanding && (
+            <div className="hidden md:flex items-center gap-0">
+              {NAV_LINKS.map(link => {
+                const active = location.pathname.startsWith(link.to)
                 return (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`nav-tab no-underline flex items-center gap-1.5 ${active ? 'active' : ''}`}
+                    className={[
+                      'flex items-center gap-1.5 px-3 h-[39px] font-mono text-xs no-underline',
+                      'border-r border-ink/30 transition-colors duration-120 ease-step-1',
+                      active
+                        ? 'bg-band-primary text-ink'
+                        : 'text-white/80 hover:bg-white/10',
+                    ].join(' ')}
                   >
-                    <span className="text-sm">{link.icon}</span>
+                    <PixelGlyph name={link.glyph} size={8} color={active ? '#3B3B3B' : '#FFFFFF'} />
                     {link.label}
                   </Link>
                 )
               })}
             </div>
+          )}
 
-            {/* Right side */}
-            <div className="flex items-center gap-3">
-              {isLanding ? (
-                <Link
-                  to="/explorer"
-                  className="btn-primary text-sm py-2 text-white no-underline"
-                >
-                  Launch Dashboard →
-                </Link>
-              ) : (
-                <Link
-                  to="/"
-                  className="text-xs text-slate-500 hover:text-slate-300 transition-colors no-underline hidden sm:block"
-                >
-                  ← Home
-                </Link>
-              )}
-
-              {/* Mobile hamburger */}
-              <button
-                className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all"
-                onClick={() => setMobileOpen(v => !v)}
-                aria-label="Toggle menu"
+          <div className="flex items-center gap-2">
+            {isLanding ? (
+              <Link
+                to="/explorer"
+                className="font-pixel text-xs text-white no-underline border border-white/50 px-2 py-1 hover:border-band-focus hover:text-band-focus transition-colors duration-120 ease-step-1"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {mobileOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
-            </div>
+                Launch
+              </Link>
+            ) : (
+              <Link
+                to="/"
+                className="font-mono text-xs text-white/60 no-underline hover:text-white transition-colors duration-120 ease-step-1 hidden sm:block"
+              >
+                ← Home
+              </Link>
+            )}
+
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden p-1.5 text-white/70 hover:text-white transition-colors"
+              onClick={() => setMobileOpen(v => !v)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            >
+              <PixelGlyph name={mobileOpen ? 'cross' : 'menu'} size={12} color="currentColor" />
+            </button>
           </div>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Mobile overlay menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 flex flex-col"
-            style={{ background: 'rgba(5,10,18,0.97)', backdropFilter: 'blur(20px)' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="h-16" />
-            <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6">
-              {NAV_LINKS.map((link, i) => {
-                const active = location.pathname === link.to
-                return (
-                  <motion.div
-                    key={link.to}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.07 }}
-                    className="w-full max-w-xs"
-                  >
-                    <Link
-                      to={link.to}
-                      className={`flex items-center gap-3 w-full px-6 py-4 rounded-xl no-underline transition-all ${
-                        active
-                          ? 'bg-indigo-500/20 text-white border border-indigo-500/30'
-                          : 'text-slate-300 hover:bg-white/5'
-                      }`}
-                    >
-                      <span className="text-2xl">{link.icon}</span>
-                      <span className="text-lg font-medium">{link.label}</span>
-                    </Link>
-                  </motion.div>
-                )
-              })}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: NAV_LINKS.length * 0.07 }}
-                className="w-full max-w-xs mt-4"
-              >
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-bar flex flex-col border-r border-ink"
+          style={{ top: '40px' }}
+        >
+          <div className="flex flex-col">
+            {NAV_LINKS.map(link => {
+              const active = location.pathname.startsWith(link.to)
+              return (
                 <Link
-                  to="/"
-                  className="flex items-center justify-center w-full px-6 py-3 rounded-xl border border-white/10 text-slate-400 no-underline hover:bg-white/5 transition-all"
+                  key={link.to}
+                  to={link.to}
+                  className={[
+                    'flex items-center gap-3 px-4 py-3 font-pixel text-sm no-underline',
+                    'border-b border-ink/30 transition-colors duration-120 ease-step-1',
+                    active ? 'bg-band-primary text-ink' : 'text-white hover:bg-white/10',
+                  ].join(' ')}
                 >
-                  ← Back to Home
+                  <PixelGlyph name={link.glyph} size={12} color={active ? '#3B3B3B' : '#FFFFFF'} />
+                  {link.label}
                 </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              )
+            })}
+            <Link
+              to="/"
+              className="flex items-center gap-3 px-4 py-3 font-mono text-sm text-white/60 no-underline border-b border-ink/30 hover:text-white transition-colors"
+            >
+              ← Home
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Spacer so page content clears the fixed nav */}
+      <div style={{ height: '40px' }} aria-hidden="true" />
     </>
   )
 }

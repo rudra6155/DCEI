@@ -1,15 +1,16 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import ScoreGauge from './ScoreGauge.jsx'
 import RiskBadge from './RiskBadge.jsx'
 import SubIndexBar from './SubIndexBar.jsx'
+import Panel from './Panel.jsx'
+import DashedBtn from './DashedBtn.jsx'
 import { getInfraNote } from '../utils/helpers.js'
 
 /**
- * CityCard — full city detail card.
+ * CityCard — full city detail card in game UI style.
  * Props:
- *   city: scored city object (with WSI, CII, CPI, TLI, DCEI_score, etc.)
- *   compact: boolean (optional, for smaller version)
+ *   city: scored city object
+ *   compact: boolean
  */
 export default function CityCard({ city, compact = false }) {
   if (!city) return null
@@ -17,65 +18,77 @@ export default function CityCard({ city, compact = false }) {
   const infraNote = getInfraNote(city.name)
 
   const stats = [
-    { label: 'Population Density', value: `${city.population_density.toLocaleString()} /km²`, source: 'Census 2011' },
-    { label: 'CGWB Category', value: city.cgwb_category, source: 'CGWB 2022' },
-    { label: 'Grid Zone', value: city.grid_zone, source: 'CEA' },
-    { label: 'Avg. Temperature', value: `${city.avg_temp_c}°C`, source: 'IMD Normals' },
+    { label: 'Pop. Density', value: `${city.population_density.toLocaleString()} /km²`, source: 'Census 2011' },
+    { label: 'CGWB Cat.',    value: city.cgwb_category,   source: 'CGWB 2022' },
+    { label: 'Grid Zone',    value: city.grid_zone,        source: 'CEA' },
+    { label: 'Avg. Temp.',   value: `${city.avg_temp_c}°C`, source: 'IMD Normals' },
     { label: 'Existing DCs', value: city.dc_count === 0 ? 'None known' : `${city.dc_count}`, source: 'NASSCOM 2024' },
-    { label: 'State', value: city.state, source: 'GOI' },
+    { label: 'State',        value: city.state,            source: 'GOI' },
   ]
 
   return (
-    <div className="glass-card p-6 w-full">
+    <Panel className="p-4 w-full">
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-white">{city.name}</h2>
-          <p className="text-slate-400 text-sm mt-0.5">{city.state}</p>
+          <h2 className="font-pixel text-lg text-ink leading-tight">{city.name}</h2>
+          <p className="font-mono text-xs text-ink-soft mt-0.5">{city.state}</p>
           <div className="mt-2">
             <RiskBadge score={city.DCEI_score} />
           </div>
         </div>
         <div className="flex-shrink-0">
           <ScoreGauge score={city.DCEI_score} size={compact ? 130 : 160} />
-          <p className="text-center text-xs text-slate-500 mt-1">DCEI Score</p>
+          <p className="text-center text-[10px] font-mono text-ink-soft mt-1">DCEI Score</p>
         </div>
       </div>
 
       {/* Sub-index bars */}
-      <div className="space-y-3 mb-6">
-        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">
+      <Panel inset className="p-3 mb-4">
+        <p className="font-mono text-[10px] text-ink-soft uppercase tracking-widest mb-2">
           Sub-Index Breakdown
-        </h3>
-        <SubIndexBar label="WSI — Water Stress" value={city.WSI} />
-        <SubIndexBar label="CII — Carbon Intensity" value={city.CII} />
-        <SubIndexBar label="CPI — Community Pressure" value={city.CPI} />
-        <SubIndexBar label="TLI — Thermal Load" value={city.TLI} />
-      </div>
+        </p>
+        <div className="space-y-2">
+          <SubIndexBar label="WSI — Water Stress"      value={city.WSI} />
+          <SubIndexBar label="CII — Carbon Intensity"  value={city.CII} />
+          <SubIndexBar label="CPI — Community Pressure" value={city.CPI} />
+          <SubIndexBar label="TLI — Thermal Load"      value={city.TLI} />
+        </div>
+      </Panel>
 
       {/* Key stats grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
-        {stats.map((s) => (
-          <div key={s.label} className="bg-white/3 rounded-lg p-3 border border-white/5">
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">{s.label}</p>
-            <p className="text-sm font-semibold text-white">{s.value}</p>
-            <p className="text-[10px] text-slate-600 mt-0.5">src: {s.source}</p>
-          </div>
-        ))}
+      <div className="dc-table mb-4">
+        <table className="w-full border-collapse">
+          <tbody>
+            {stats.map((s, i) => (
+              <tr key={s.label} className={i % 2 === 1 ? 'bg-paper-2' : 'bg-paper'}>
+                <td className="font-mono text-[10px] text-ink-soft uppercase tracking-wider px-2 py-1 border border-ink/20 w-1/3">
+                  {s.label}
+                </td>
+                <td className="font-mono text-xs text-ink px-2 py-1 border border-ink/20">
+                  {s.value}
+                </td>
+                <td className="font-mono text-[9px] text-ink-soft px-2 py-1 border border-ink/20 text-right">
+                  {s.source}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Infrastructure note */}
-      <div className="bg-blue-500/5 border border-blue-500/15 rounded-lg p-3 mb-5">
-        <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">
+      <Panel inset className="p-3 mb-4">
+        <p className="font-mono text-[10px] text-ink-soft uppercase tracking-widest mb-1">
           Infrastructure Context
         </p>
-        <p className="text-xs text-slate-400 leading-relaxed">{infraNote}</p>
-      </div>
+        <p className="font-mono text-xs text-ink leading-relaxed">{infraNote}</p>
+      </Panel>
 
       {/* Data confidence */}
-      <p className="text-[10px] text-slate-600 mb-4">
-        Data confidence: <span className="text-slate-500 capitalize">{city.data_confidence}</span>
-        {' · '}Sources: CGWB 2022, CEA CO₂ Baseline v17, IMD 1991–2020, Census 2011, NASSCOM 2024
+      <p className="font-mono text-[10px] text-ink-soft mb-4">
+        Confidence: <span className="text-ink capitalize">{city.data_confidence}</span>
+        {' · '}CGWB 2022 · CEA CO₂ v17 · IMD 1991–2020 · Census 2011 · NASSCOM 2024
       </p>
 
       {/* Action buttons */}
@@ -83,18 +96,18 @@ export default function CityCard({ city, compact = false }) {
         <div className="flex flex-wrap gap-3">
           <Link
             to={`/compare?city=${encodeURIComponent(city.name)}`}
-            className="btn-primary text-sm py-2 px-4 text-white no-underline"
+            className="no-underline"
           >
-            Compare with another city →
+            <DashedBtn variant="lavender">Compare with another city</DashedBtn>
           </Link>
           <Link
             to={`/alternatives?city=${encodeURIComponent(city.name)}`}
-            className="btn-secondary text-sm py-2 px-4 text-slate-300 no-underline"
+            className="no-underline"
           >
-            Find alternatives →
+            <DashedBtn variant="neutral">Find alternatives</DashedBtn>
           </Link>
         </div>
       )}
-    </div>
+    </Panel>
   )
 }

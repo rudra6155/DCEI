@@ -2,38 +2,80 @@
 export default {
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
+    // Zero radius everywhere — game UI uses hard corners
+    borderRadius: {
+      DEFAULT: '0',
+      none: '0',
+      sm: '0',
+      md: '0',
+      lg: '0',
+      xl: '0',
+      '2xl': '0',
+      '3xl': '0',
+      full: '0',
+    },
     extend: {
       colors: {
-        navy:    '#0a0f1e',
-        slate2:  '#111827',
-        water:   '#0ea5e9',
-        danger:  '#f43f5e',
-        success: '#10b981',
-        warn:    '#f59e0b',
-        orange:  '#f97316',
+        // ── Base surfaces (measured from reference screenshots) ──
+        paper:      '#FFFFFF',   // page background
+        'paper-2':  '#EDEDEB',   // recessed panels, alt table rows
+        'paper-3':  '#F0F0EE',   // inset wells
+        bar:        '#7D7D7D',   // full-width header bars
+        ink:        '#3B3B3B',   // primary text and borders
+        'ink-soft': '#818181',   // secondary text, labels
+
+        // ── Accent bands (measured) ──
+        'band-primary': '#D3A9FD',   // selected nav/menu row (lavender)
+        'band-focus':   '#61F690',   // focused options row (lime)
+        select:         '#FFD275',   // selected tile / record band (amber)
+        cube:           '#03CDD7',   // the teal cube
+
+        // ── Game accents ──
+        'pink-accent':  '#FDA9B6',   // decorative pink
+        'btn-neutral':  '#EDEDEB',   // neutral button fill
+        'btn-lavender': '#EADFFD',   // secondary button fill
+
+        // ── Risk ramp (cool → warm, all WCAG AA on paper) ──
+        'risk-low':      '#4AB0E8',
+        'risk-moderate': '#60C860',
+        'risk-high':     '#F4A020',
+        'risk-critical': '#E03838',
       },
+
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        pixel: ['"Pixelify Sans"', 'monospace'],
+        mono:  ['"Space Mono"', 'ui-monospace', 'monospace'],
+        sans:  ['"Space Mono"', 'ui-monospace', 'monospace'],
       },
-      backgroundImage: {
-        'grid-pattern': "linear-gradient(rgba(148,163,184,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.04) 1px, transparent 1px)",
-      },
-      backgroundSize: {
-        'grid': '40px 40px',
-      },
+
       animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
-        'spin-slow':  'spin 8s linear infinite',
-        'float':      'float 6s ease-in-out infinite',
+        'step-blink': 'step-blink 600ms steps(1) infinite',
+        'step-tick':  'step-tick 80ms steps(1)',
       },
+
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%':      { transform: 'translateY(-12px)' },
+        'step-blink': {
+          '0%, 100%': { opacity: '1' },
+          '50%':      { opacity: '0' },
         },
+        'step-tick': {
+          '0%':   { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+
+      transitionTimingFunction: {
+        'step-1': 'steps(1)',
+        'step-4': 'steps(4)',
+      },
+
+      transitionDuration: {
+        '120': '120ms',
+        '150': '150ms',
+        '160': '160ms',
+        '180': '180ms',
       },
     },
   },
   plugins: [],
-};
+}

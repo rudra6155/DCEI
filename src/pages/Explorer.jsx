@@ -1,46 +1,54 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
 import { CITIES } from '../data/cities.js'
 import { scoreAllCities, DEFAULT_WEIGHTS } from '../data/scoring.js'
-import { getRiskColor, getRiskCategory, formatScore } from '../utils/helpers.js'
+import { getRiskColor, getRiskCategory, getRiskLevel, formatScore } from '../utils/helpers.js'
 import ScoreGauge from '../components/ScoreGauge.jsx'
 import RiskBadge from '../components/RiskBadge.jsx'
 import SubIndexBar from '../components/SubIndexBar.jsx'
 import CityCard from '../components/CityCard.jsx'
+import PageHeader from '../components/PageHeader.jsx'
+import Panel from '../components/Panel.jsx'
+import PixelGlyph from '../components/PixelGlyph.jsx'
 
 const PAGE_TRANSITION = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-  transition: { duration: 0.35 },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit:    { opacity: 0 },
+  transition: { duration: 0.16 },
 }
 
 const SORT_FIELDS = [
   { key: 'DCEI_score', label: 'DCEI' },
-  { key: 'WSI', label: 'WSI' },
-  { key: 'CII', label: 'CII' },
-  { key: 'CPI', label: 'CPI' },
-  { key: 'TLI', label: 'TLI' },
-  { key: 'name', label: 'City' },
+  { key: 'WSI',        label: 'WSI'  },
+  { key: 'CII',        label: 'CII'  },
+  { key: 'CPI',        label: 'CPI'  },
+  { key: 'TLI',        label: 'TLI'  },
+  { key: 'name',       label: 'City' },
+]
+
+const RISK_LEGEND = [
+  { label: 'Low (≤30)',     color: '#4AB0E8' },
+  { label: 'Moderate (≤50)', color: '#60C860' },
+  { label: 'High (≤70)',    color: '#F4A020' },
+  { label: 'Critical (>70)', color: '#E03838' },
 ]
 
 export default function Explorer() {
   const scoredCities = useMemo(() => scoreAllCities(CITIES, DEFAULT_WEIGHTS), [])
 
   const [selectedCity, setSelectedCity] = useState(null)
-  const [sortField, setSortField] = useState('DCEI_score')
-  const [sortDir, setSortDir] = useState('desc')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [suggestions, setSuggestions] = useState([])
+  const [sortField, setSortField]       = useState('DCEI_score')
+  const [sortDir, setSortDir]           = useState('desc')
+  const [searchQuery, setSearchQuery]   = useState('')
+  const [suggestions, setSuggestions]   = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const detailRef = useRef(null)
   const searchRef = useRef(null)
 
-  // Sorted + filtered table data
   const tableData = useMemo(() => {
     let data = [...scoredCities]
     if (searchQuery) {
@@ -63,9 +71,9 @@ export default function Explorer() {
   const handleSearch = (val) => {
     setSearchQuery(val)
     if (val.length >= 1) {
-      const matches = scoredCities.filter(c =>
-        c.name.toLowerCase().startsWith(val.toLowerCase())
-      ).slice(0, 6)
+      const matches = scoredCities
+        .filter(c => c.name.toLowerCase().startsWith(val.toLowerCase()))
+        .slice(0, 6)
       setSuggestions(matches)
       setShowSuggestions(true)
     } else {
@@ -95,12 +103,8 @@ export default function Explorer() {
     setTimeout(() => detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
   }
 
-  const getMarkerRadius = (dc) => {
-    if (dc === 0) return 6
-    return Math.min(6 + dc * 0.5, 20)
-  }
+  const getMarkerRadius = (dc) => dc === 0 ? 6 : Math.min(6 + dc * 0.5, 20)
 
-  // Close suggestions on outside click
   useEffect(() => {
     const handleClick = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -112,51 +116,55 @@ export default function Explorer() {
   }, [])
 
   return (
-    <motion.div className="page-transition pt-20 pb-12 min-h-screen" {...PAGE_TRANSITION}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">City Explorer</h1>
-          <p className="text-slate-400">
-            Explore environmental suitability scores for 50 Indian cities. Click any city on the map or table for details.
-          </p>
-        </div>
+    <motion.div className="page-transition min-h-dvh bg-paper" {...PAGE_TRANSITION}>
+      <PageHeader
+        title="City Explorer"
+        subtitle="50 Indian cities · click any row or map marker for details"
+      />
+
+      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
 
         {/* Search */}
-        <div className="mb-6 relative max-w-md" ref={searchRef}>
-          <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 111 11a6 6 0 0116 0z" />
-            </svg>
+        <div className="relative max-w-md" ref={searchRef}>
+          <Panel className="flex items-center gap-2 px-3 py-2">
+            <PixelGlyph name="filter" size={10} color="#818181" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => handleSearch(e.target.value)}
               onFocus={() => searchQuery && setShowSuggestions(true)}
               placeholder="Search cities…"
-              className="w-full pl-9 pr-4 py-2.5 bg-slate-800/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
+              className="flex-1 bg-transparent font-mono text-sm text-ink placeholder-ink-soft focus:outline-none"
             />
-          </div>
-          {/* Autocomplete */}
+            {searchQuery && (
+              <button
+                onClick={() => { setSearchQuery(''); setSuggestions([]); setShowSuggestions(false) }}
+                className="text-ink-soft hover:text-ink transition-colors"
+                aria-label="Clear search"
+              >
+                <PixelGlyph name="cross" size={8} color="currentColor" />
+              </button>
+            )}
+          </Panel>
           <AnimatePresence>
             {showSuggestions && suggestions.length > 0 && (
               <motion.div
-                className="absolute top-full left-0 right-0 mt-1 glass-dark rounded-xl border border-white/10 overflow-hidden z-30"
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.15 }}
+                className="absolute top-full left-0 right-0 mt-0.5 z-30 border border-ink bg-paper"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.1 }}
               >
                 {suggestions.map(city => (
                   <button
                     key={city.id}
                     onClick={() => handleSelectSuggestion(city)}
-                    className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/5 transition-colors text-left"
+                    className="w-full flex items-center justify-between px-3 py-2 font-mono text-sm text-ink hover:bg-paper-2 border-b border-ink/10 last:border-b-0 transition-colors text-left"
                   >
-                    <div>
-                      <span className="text-sm text-white">{city.name}</span>
-                      <span className="text-xs text-slate-500 ml-2">{city.state}</span>
-                    </div>
+                    <span>
+                      {city.name}
+                      <span className="text-ink-soft text-xs ml-2">{city.state}</span>
+                    </span>
                     <RiskBadge score={city.DCEI_score} />
                   </button>
                 ))}
@@ -166,7 +174,7 @@ export default function Explorer() {
         </div>
 
         {/* Map */}
-        <div className="mb-8 rounded-2xl overflow-hidden border border-white/5 h-[500px]">
+        <Panel className="overflow-hidden" style={{ height: 480 }}>
           <MapContainer
             center={[20.5937, 78.9629]}
             zoom={5}
@@ -183,10 +191,10 @@ export default function Explorer() {
                 center={[city.lat, city.lon]}
                 radius={getMarkerRadius(city.dc_count)}
                 pathOptions={{
-                  fillColor: getRiskColor(city.DCEI_score),
-                  fillOpacity: selectedCity?.id === city.id ? 1 : 0.75,
-                  color: selectedCity?.id === city.id ? '#fff' : getRiskColor(city.DCEI_score),
-                  weight: selectedCity?.id === city.id ? 2.5 : 1,
+                  fillColor:   getRiskColor(city.DCEI_score),
+                  fillOpacity: selectedCity?.id === city.id ? 1 : 0.8,
+                  color:       selectedCity?.id === city.id ? '#3B3B3B' : getRiskColor(city.DCEI_score),
+                  weight:      selectedCity?.id === city.id ? 2 : 1,
                 }}
                 eventHandlers={{
                   click: () => {
@@ -196,19 +204,17 @@ export default function Explorer() {
                 }}
               >
                 <Popup>
-                  <div className="text-sm">
-                    <p className="font-bold text-base mb-1">{city.name}</p>
-                    <p className="text-slate-300 mb-2">{city.state}</p>
-                    <div className="flex items-center gap-2">
+                  <div className="font-mono text-xs text-ink">
+                    <p className="font-pixel text-sm mb-1">{city.name}</p>
+                    <p className="text-ink-soft mb-1">{city.state}</p>
+                    <div className="flex items-center gap-1">
                       <span>DCEI:</span>
                       <span className="font-bold" style={{ color: getRiskColor(city.DCEI_score) }}>
                         {formatScore(city.DCEI_score)}
                       </span>
-                      <span style={{ color: getRiskColor(city.DCEI_score) }}>
-                        ({getRiskCategory(city.DCEI_score)})
-                      </span>
+                      <RiskBadge score={city.DCEI_score} />
                     </div>
-                    <div className="mt-2 text-xs text-slate-400 space-y-0.5">
+                    <div className="mt-1 text-ink-soft space-y-0.5">
                       <div>WSI: {formatScore(city.WSI)} · CII: {formatScore(city.CII)}</div>
                       <div>CPI: {formatScore(city.CPI)} · TLI: {formatScore(city.TLI)}</div>
                     </div>
@@ -217,23 +223,18 @@ export default function Explorer() {
               </CircleMarker>
             ))}
           </MapContainer>
-        </div>
+        </Panel>
 
         {/* Map legend */}
-        <div className="flex flex-wrap items-center gap-4 mb-8 text-xs text-slate-500">
-          <span className="font-medium text-slate-400">Risk:</span>
-          {[
-            { label: 'Low (≤30)', color: '#10b981' },
-            { label: 'Moderate (≤50)', color: '#f59e0b' },
-            { label: 'High (≤70)', color: '#f97316' },
-            { label: 'Critical (>70)', color: '#ef4444' },
-          ].map(l => (
+        <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-ink-soft">
+          <span className="uppercase tracking-wider">Risk:</span>
+          {RISK_LEGEND.map(l => (
             <div key={l.label} className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded-full" style={{ background: l.color }} />
+              <div className="w-2.5 h-2.5" style={{ background: l.color }} />
               {l.label}
             </div>
           ))}
-          <span className="ml-2 text-slate-600">Circle size ∝ existing DC count</span>
+          <span className="text-ink-soft/60">· Circle size ∝ existing DC count</span>
         </div>
 
         {/* City detail */}
@@ -242,19 +243,21 @@ export default function Explorer() {
             {selectedCity && (
               <motion.div
                 key={selectedCity.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.35 }}
-                className="mb-10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.14 }}
+                className="mb-4"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-white">City Detail</h2>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-pixel text-sm text-ink">City Detail</p>
                   <button
                     onClick={() => setSelectedCity(null)}
-                    className="text-slate-500 hover:text-white text-sm transition-colors"
+                    className="flex items-center gap-1 font-mono text-xs text-ink-soft hover:text-ink transition-colors"
+                    aria-label="Close detail"
                   >
-                    ✕ Close
+                    <PixelGlyph name="cross" size={8} color="currentColor" />
+                    Close
                   </button>
                 </div>
                 <CityCard city={selectedCity} />
@@ -265,68 +268,72 @@ export default function Explorer() {
 
         {/* Rankings table */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-white">City Rankings</h2>
-            <span className="text-sm text-slate-500">{tableData.length} cities</span>
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-pixel text-sm text-ink">City Rankings</p>
+            <span className="font-mono text-xs text-ink-soft">{tableData.length} cities</span>
           </div>
-          <div className="rounded-2xl overflow-hidden border border-white/5 glass-dark">
-            <div className="overflow-x-auto scrollbar-thin">
-              <table className="w-full min-w-[600px]">
+          <Panel className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="dc-table w-full min-w-[600px] border-collapse">
                 <thead>
-                  <tr>
-                    <th className="table-header w-8 pl-4">#</th>
+                  <tr style={{ backgroundColor: '#7D7D7D' }}>
+                    <th className="font-pixel text-[10px] text-white uppercase tracking-wider px-3 py-2 text-left border border-ink/30 w-8">#</th>
                     {SORT_FIELDS.map(f => (
                       <th
                         key={f.key}
-                        className="table-header cursor-pointer hover:text-white transition-colors select-none"
+                        className="font-pixel text-[10px] text-white uppercase tracking-wider px-3 py-2 text-left border border-ink/30 cursor-pointer hover:bg-white/10 transition-colors select-none"
                         onClick={() => handleSort(f.key)}
                       >
                         <span className="flex items-center gap-1">
                           {f.label}
                           {sortField === f.key && (
-                            <span className="text-indigo-400">
+                            <span style={{ color: '#61F690' }}>
                               {sortDir === 'asc' ? '↑' : '↓'}
                             </span>
                           )}
                         </span>
                       </th>
                     ))}
-                    <th className="table-header">Risk</th>
-                    <th className="table-header">Confidence</th>
+                    <th className="font-pixel text-[10px] text-white uppercase tracking-wider px-3 py-2 text-left border border-ink/30">Risk</th>
+                    <th className="font-pixel text-[10px] text-white uppercase tracking-wider px-3 py-2 text-left border border-ink/30">Data</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tableData.map((city, i) => (
                     <tr
                       key={city.id}
-                      className={`table-row ${selectedCity?.id === city.id ? 'bg-indigo-500/10' : ''}`}
+                      className={`cursor-pointer transition-colors duration-120 ease-step-1 ${
+                        selectedCity?.id === city.id
+                          ? 'bg-select'
+                          : i % 2 === 0 ? 'bg-paper hover:bg-paper-2' : 'bg-paper-2 hover:bg-paper-3'
+                      }`}
                       onClick={() => handleRowClick(city)}
                     >
-                      <td className="table-cell text-slate-600 pl-4">{i + 1}</td>
-                      <td className="table-cell font-medium text-white">{city.name}</td>
-                      <td className="table-cell font-bold" style={{ color: getRiskColor(city.DCEI_score) }}>
+                      <td className="font-mono text-[10px] text-ink-soft px-3 py-1.5 border border-ink/10">{i + 1}</td>
+                      <td className="font-mono text-xs text-ink font-medium px-3 py-1.5 border border-ink/10">{city.name}</td>
+                      <td className="font-mono text-xs font-bold px-3 py-1.5 border border-ink/10" style={{ color: getRiskColor(city.DCEI_score) }}>
                         {formatScore(city.DCEI_score)}
                       </td>
-                      <td className="table-cell" style={{ color: getRiskColor(city.WSI) }}>
+                      <td className="font-mono text-xs px-3 py-1.5 border border-ink/10" style={{ color: getRiskColor(city.WSI) }}>
                         {formatScore(city.WSI)}
                       </td>
-                      <td className="table-cell" style={{ color: getRiskColor(city.CII) }}>
+                      <td className="font-mono text-xs px-3 py-1.5 border border-ink/10" style={{ color: getRiskColor(city.CII) }}>
                         {formatScore(city.CII)}
                       </td>
-                      <td className="table-cell" style={{ color: getRiskColor(city.CPI) }}>
+                      <td className="font-mono text-xs px-3 py-1.5 border border-ink/10" style={{ color: getRiskColor(city.CPI) }}>
                         {formatScore(city.CPI)}
                       </td>
-                      <td className="table-cell" style={{ color: getRiskColor(city.TLI) }}>
+                      <td className="font-mono text-xs px-3 py-1.5 border border-ink/10" style={{ color: getRiskColor(city.TLI) }}>
                         {formatScore(city.TLI)}
                       </td>
-                      <td className="table-cell">
+                      <td className="px-3 py-1.5 border border-ink/10">
                         <RiskBadge score={city.DCEI_score} />
                       </td>
-                      <td className="table-cell">
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                      <td className="font-mono text-[10px] px-3 py-1.5 border border-ink/10">
+                        <span className={`px-1.5 py-0.5 border ${
                           city.data_confidence === 'measured'
-                            ? 'bg-emerald-500/10 text-emerald-400'
-                            : 'bg-slate-700/50 text-slate-400'
+                            ? 'border-risk-moderate text-risk-moderate'
+                            : 'border-ink-soft text-ink-soft'
                         }`}>
                           {city.data_confidence}
                         </span>
@@ -336,8 +343,8 @@ export default function Explorer() {
                 </tbody>
               </table>
             </div>
-          </div>
-          <p className="text-xs text-slate-600 mt-3">
+          </Panel>
+          <p className="font-mono text-[10px] text-ink-soft mt-2">
             Click any row to see city detail. Sorted by DCEI score descending by default.
             Sources: CGWB 2022, CEA CO₂ Baseline v17, IMD 1991–2020, Census 2011, NASSCOM 2024.
           </p>

@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useMemo } from 'react'
+import { motion } from 'framer-motion'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell,
@@ -7,33 +7,36 @@ import {
 
 import { CITIES } from '../data/cities.js'
 import { scoreAllCities, normalizeWeights, WEIGHT_SCENARIOS, DEFAULT_WEIGHTS } from '../data/scoring.js'
-import { getRiskColor, getRiskCategory, formatScore } from '../utils/helpers.js'
+import { getRiskColor, formatScore, getRiskCategory } from '../utils/helpers.js'
+import PageHeader from '../components/PageHeader.jsx'
+import Panel from '../components/Panel.jsx'
+import OptionsRow from '../components/OptionsRow.jsx'
+import MenuRow from '../components/MenuRow.jsx'
 
 const PAGE_TRANSITION = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-  transition: { duration: 0.35 },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit:    { opacity: 0 },
+  transition: { duration: 0.16 },
 }
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null
   const score = payload[0]?.value
   return (
-    <div className="glass-dark rounded-xl p-3 border border-white/10 text-sm min-w-[160px]">
-      <p className="text-white font-semibold mb-1">{label}</p>
-      <p style={{ color: getRiskColor(score) }} className="font-bold text-lg">{formatScore(score)}</p>
-      <p className="text-xs text-slate-500">{getRiskCategory(score)} Risk</p>
+    <div className="border border-ink bg-paper p-2 font-mono text-xs text-ink min-w-[140px]">
+      <p className="font-pixel text-[10px] mb-1">{label}</p>
+      <p style={{ color: getRiskColor(score) }} className="font-bold">{formatScore(score)}</p>
+      <p className="text-ink-soft">{getRiskCategory(score)} Risk</p>
     </div>
   )
 }
 
-// Heatmap color interpolation
 function heatmapColor(score) {
-  if (score <= 30) return `rgba(16,185,129,${0.3 + score / 100})`
-  if (score <= 50) return `rgba(245,158,11,${0.3 + score / 100})`
-  if (score <= 70) return `rgba(249,115,22,${0.3 + score / 100})`
-  return `rgba(239,68,68,${0.3 + score / 100})`
+  if (score <= 30) return `rgba(74,176,232,${0.3 + score / 100})`
+  if (score <= 50) return `rgba(96,200,96,${0.3 + score / 100})`
+  if (score <= 70) return `rgba(244,160,32,${0.3 + score / 100})`
+  return `rgba(224,56,56,${0.3 + score / 100})`
 }
 
 export default function Sensitivity() {
@@ -43,8 +46,7 @@ export default function Sensitivity() {
   const [w4, setW4] = useState(20)
   const [activeScenario, setActiveScenario] = useState('default')
 
-  // Auto-normalize weights for scoring
-  const rawWeights = { w1: w1 / 100, w2: w2 / 100, w3: w3 / 100, w4: w4 / 100 }
+  const rawWeights       = { w1: w1 / 100, w2: w2 / 100, w3: w3 / 100, w4: w4 / 100 }
   const normalizedWeights = normalizeWeights(rawWeights)
 
   const scoredCities = useMemo(
@@ -52,19 +54,12 @@ export default function Sensitivity() {
     [w1, w2, w3, w4]
   )
 
-  // Pre-compute all scenario scores for heatmap
-  const heatmapData = useMemo(() => {
-    return WEIGHT_SCENARIOS.map(scenario => ({
-      ...scenario,
-      scores: scoreAllCities(CITIES, scenario.weights),
-    }))
-  }, [])
+  const heatmapData = useMemo(() => WEIGHT_SCENARIOS.map(s => ({
+    ...s,
+    scores: scoreAllCities(CITIES, s.weights),
+  })), [])
 
-  // Sorted cities alphabetically for heatmap rows
-  const heatmapCities = useMemo(
-    () => [...CITIES].sort((a, b) => a.name.localeCompare(b.name)),
-    []
-  )
+  const heatmapCities = useMemo(() => [...CITIES].sort((a, b) => a.name.localeCompare(b.name)), [])
 
   const sum = w1 + w2 + w3 + w4
   const display = {
@@ -83,167 +78,149 @@ export default function Sensitivity() {
     setW4(Math.round(nw.w4 * 100))
   }
 
-  const sliderStyle = "w-full accent-indigo-500"
-
   return (
-    <motion.div className="page-transition pt-20 pb-12 min-h-screen" {...PAGE_TRANSITION}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Sensitivity Analysis</h1>
-          <p className="text-slate-400">
-            Adjust sub-index weights to see how rankings change. Weights are auto-normalized to sum to 1.
-          </p>
-        </div>
+    <motion.div className="page-transition min-h-dvh bg-paper" {...PAGE_TRANSITION}>
+      <PageHeader title="Sensitivity Analysis" subtitle="Adjust weights · auto-normalized to sum to 1" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+
           {/* Weight controls */}
           <div className="lg:col-span-1">
-            <div className="glass-card p-6 sticky top-24">
-              <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">Weight Configuration</h3>
+            <Panel className="sticky top-12">
+              <div className="px-3 py-2 border-b border-ink/20" style={{ backgroundColor: '#7D7D7D' }}>
+                <p className="font-pixel text-xs text-white uppercase tracking-wider">Weight Configuration</p>
+              </div>
 
-              {/* Weight summary */}
-              <div className="flex flex-wrap gap-2 mb-5 text-xs font-mono">
-                <span className="px-2 py-1 rounded bg-blue-500/10 text-blue-400">WSI: {display.w1}%</span>
-                <span className="px-2 py-1 rounded bg-purple-500/10 text-purple-400">CII: {display.w2}%</span>
-                <span className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-400">CPI: {display.w3}%</span>
-                <span className="px-2 py-1 rounded bg-amber-500/10 text-amber-400">TLI: {display.w4}%</span>
+              {/* Summary chips */}
+              <div className="flex flex-wrap gap-1.5 p-3 border-b border-ink/10">
+                {[
+                  { label: 'WSI', val: display.w1, color: '#4AB0E8' },
+                  { label: 'CII', val: display.w2, color: '#D3A9FD' },
+                  { label: 'CPI', val: display.w3, color: '#60C860' },
+                  { label: 'TLI', val: display.w4, color: '#F4A020' },
+                ].map(({ label, val, color }) => (
+                  <span
+                    key={label}
+                    className="font-mono text-[10px] px-2 py-0.5 border border-ink/30"
+                    style={{ color }}
+                  >
+                    {label}: {val}%
+                  </span>
+                ))}
               </div>
 
               {/* Sliders */}
-              <div className="space-y-5">
+              <div className="divide-y divide-ink/10">
                 {[
-                  { label: '💧 WSI — Water Stress', val: w1, set: setW1, color: 'text-blue-400' },
-                  { label: '⚡ CII — Carbon Intensity', val: w2, set: setW2, color: 'text-purple-400' },
-                  { label: '👥 CPI — Community Pressure', val: w3, set: setW3, color: 'text-emerald-400' },
-                  { label: '🌡️ TLI — Thermal Load', val: w4, set: setW4, color: 'text-amber-400' },
-                ].map(({ label, val, set, color }) => (
-                  <div key={label}>
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-xs text-slate-400">{label}</span>
-                      <span className={`text-sm font-bold font-mono ${color}`}>{val}</span>
+                  { label: 'WSI — Water Stress',     val: w1, set: setW1, glyph: 'water' },
+                  { label: 'CII — Carbon Intensity',  val: w2, set: setW2, glyph: 'bolt'  },
+                  { label: 'CPI — Community Pressure', val: w3, set: setW3, glyph: 'city' },
+                  { label: 'TLI — Thermal Load',      val: w4, set: setW4, glyph: 'chart' },
+                ].map(({ label, val, set }) => (
+                  <OptionsRow key={label} label={label}>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        value={val}
+                        onChange={e => {
+                          set(Number(e.target.value))
+                          setActiveScenario('custom')
+                        }}
+                        className="w-20"
+                      />
+                      <span className="font-mono text-xs text-ink w-6 text-right">{val}</span>
                     </div>
-                    <input
-                      type="range"
-                      min={0}
-                      max={100}
-                      value={val}
-                      onChange={e => {
-                        set(Number(e.target.value))
-                        setActiveScenario('custom')
-                      }}
-                      className={sliderStyle}
-                    />
-                  </div>
+                  </OptionsRow>
                 ))}
               </div>
 
               {/* Sum indicator */}
-              <div className={`mt-4 text-xs px-3 py-2 rounded-lg ${
-                sum === 100
-                  ? 'bg-emerald-500/10 text-emerald-400'
-                  : 'bg-amber-500/10 text-amber-400'
+              <div className={`mx-3 my-2 px-2 py-1 border font-mono text-[10px] ${
+                sum === 100 ? 'border-risk-moderate text-risk-moderate' : 'border-risk-high text-risk-high'
               }`}>
-                Raw sum: {sum} {sum !== 100 && '→ auto-normalized'}
+                Raw sum: {sum}{sum !== 100 && ' → auto-normalized'}
               </div>
 
-              {/* Preset buttons */}
-              <div className="mt-5">
-                <p className="text-xs text-slate-500 uppercase tracking-wider mb-3">Presets</p>
-                <div className="flex flex-col gap-2">
-                  {WEIGHT_SCENARIOS.map(scenario => (
-                    <button
-                      key={scenario.name}
-                      onClick={() => handlePreset(scenario)}
-                      className={`text-left px-3 py-2 rounded-lg text-sm transition-all ${
-                        activeScenario === scenario.name
-                          ? 'bg-indigo-500/20 text-white border border-indigo-500/30'
-                          : 'text-slate-400 hover:bg-white/5 border border-transparent'
-                      }`}
-                    >
-                      {scenario.label}
-                    </button>
-                  ))}
-                </div>
+              {/* Presets */}
+              <div className="border-t border-ink/20">
+                <p className="font-mono text-[10px] text-ink-soft uppercase tracking-widest px-3 py-2">Presets</p>
+                {WEIGHT_SCENARIOS.map(scenario => (
+                  <MenuRow
+                    key={scenario.name}
+                    active={activeScenario === scenario.name}
+                    onClick={() => handlePreset(scenario)}
+                  >
+                    {scenario.label}
+                  </MenuRow>
+                ))}
               </div>
-            </div>
+            </Panel>
           </div>
 
           {/* Bar chart */}
           <div className="lg:col-span-2">
-            <div className="glass-card p-6">
-              <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">
+            <Panel className="p-4">
+              <p className="font-pixel text-xs text-ink mb-3 uppercase tracking-wider">
                 All 50 Cities — Sorted by DCEI Score
-              </h3>
-              <ResponsiveContainer width="100%" height={420}>
+              </p>
+              <ResponsiveContainer width="100%" height={440}>
                 <BarChart
-                  data={scoredCities.map(c => ({ name: c.name, score: c.DCEI_score, risk: c.risk_category }))}
+                  data={scoredCities.map(c => ({ name: c.name, score: c.DCEI_score }))}
                   layout="vertical"
-                  margin={{ left: 80, right: 40, top: 4, bottom: 4 }}
+                  margin={{ left: 80, right: 30, top: 4, bottom: 4 }}
                   barSize={8}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" horizontal={false} />
-                  <XAxis
-                    type="number"
-                    domain={[0, 100]}
-                    tick={{ fill: '#94a3b8', fontSize: 11 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    dataKey="name"
-                    type="category"
-                    tick={{ fill: '#94a3b8', fontSize: 10 }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={78}
-                  />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
-                  <Bar dataKey="score" radius={[0, 3, 3, 0]}>
-                    {scoredCities.map((city) => (
+                  <CartesianGrid strokeDasharray="2 2" stroke="rgba(59,59,59,0.08)" horizontal={false} />
+                  <XAxis type="number" domain={[0, 100]} tick={{ fill: '#818181', fontSize: 9, fontFamily: 'monospace' }} axisLine={false} tickLine={false} />
+                  <YAxis dataKey="name" type="category" tick={{ fill: '#818181', fontSize: 9, fontFamily: 'monospace' }} axisLine={false} tickLine={false} width={76} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0,0,0,0.04)' }} />
+                  <Bar dataKey="score" radius={[0, 0, 0, 0]}>
+                    {scoredCities.map(city => (
                       <Cell key={city.id} fill={getRiskColor(city.DCEI_score)} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div>
+            </Panel>
           </div>
         </div>
 
         {/* Heatmap */}
-        <div className="glass-card p-6">
-          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-6">
-            Scenario Heatmap — DCEI Scores Across All Weight Presets
-          </h3>
-          <div className="overflow-x-auto scrollbar-thin">
-            <table className="w-full" style={{ minWidth: 700 }}>
+        <Panel className="overflow-hidden">
+          <div className="px-4 py-2 border-b border-ink/20" style={{ backgroundColor: '#7D7D7D' }}>
+            <p className="font-pixel text-xs text-white uppercase tracking-wider">
+              Scenario Heatmap — DCEI Scores Across All Weight Presets
+            </p>
+          </div>
+          <div className="overflow-x-auto p-3">
+            <table className="w-full border-collapse" style={{ minWidth: 700 }}>
               <thead>
                 <tr>
-                  <th className="text-left text-xs text-slate-500 pb-3 pr-3 font-medium w-32 min-w-[120px]">City</th>
+                  <th className="text-left font-mono text-[10px] text-ink-soft pb-2 pr-3 w-32 min-w-[120px]">City</th>
                   {WEIGHT_SCENARIOS.map(s => (
-                    <th key={s.name} className="text-center text-[10px] text-slate-400 pb-3 px-1 font-medium whitespace-nowrap">
+                    <th key={s.name} className="text-center font-mono text-[9px] text-ink-soft pb-2 px-0.5 whitespace-nowrap">
                       {s.label}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {heatmapCities.map((city) => (
-                  <tr key={city.id} className="hover:bg-white/2 transition-colors">
-                    <td className="text-xs text-slate-400 py-1 pr-3 font-medium truncate max-w-[120px]">
+                {heatmapCities.map(city => (
+                  <tr key={city.id}>
+                    <td className="font-mono text-[10px] text-ink-soft py-0.5 pr-3 truncate max-w-[120px]">
                       {city.name}
                     </td>
                     {heatmapData.map(scenario => {
                       const scored = scenario.scores.find(c => c.id === city.id)
-                      const score = scored?.DCEI_score ?? 0
+                      const score  = scored?.DCEI_score ?? 0
                       return (
                         <td key={scenario.name} className="px-0.5 py-0.5 text-center">
                           <div
-                            className="rounded text-[10px] font-mono font-semibold text-white py-0.5 px-1"
-                            style={{
-                              background: heatmapColor(score),
-                              minWidth: 36,
-                            }}
+                            className="font-mono text-[9px] py-0.5 px-0.5 text-ink"
+                            style={{ background: heatmapColor(score), minWidth: 32 }}
                             title={`${city.name} / ${scenario.label}: ${score.toFixed(1)}`}
                           >
                             {score.toFixed(0)}
@@ -256,21 +233,22 @@ export default function Sensitivity() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-center gap-3 mt-4">
-            <span className="text-xs text-slate-500">Score scale:</span>
+          {/* Legend */}
+          <div className="flex items-center gap-3 px-3 py-2 border-t border-ink/10">
+            <span className="font-mono text-[10px] text-ink-soft">Scale:</span>
             {[
-              { label: '≤30 Low', color: 'rgba(16,185,129,0.6)' },
-              { label: '≤50 Moderate', color: 'rgba(245,158,11,0.6)' },
-              { label: '≤70 High', color: 'rgba(249,115,22,0.6)' },
-              { label: '>70 Critical', color: 'rgba(239,68,68,0.6)' },
+              { label: '≤30 Low',      color: 'rgba(74,176,232,0.6)'  },
+              { label: '≤50 Moderate', color: 'rgba(96,200,96,0.6)'   },
+              { label: '≤70 High',     color: 'rgba(244,160,32,0.6)'  },
+              { label: '>70 Critical', color: 'rgba(224,56,56,0.6)'   },
             ].map(l => (
-              <div key={l.label} className="flex items-center gap-1.5">
-                <div className="w-4 h-4 rounded" style={{ background: l.color }} />
-                <span className="text-xs text-slate-500">{l.label}</span>
+              <div key={l.label} className="flex items-center gap-1">
+                <div className="w-3 h-3" style={{ background: l.color }} />
+                <span className="font-mono text-[9px] text-ink-soft">{l.label}</span>
               </div>
             ))}
           </div>
-        </div>
+        </Panel>
       </div>
     </motion.div>
   )

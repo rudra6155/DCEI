@@ -1,10 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="8" fill="#0a0f1e"/>
-  <rect x="6" y="10" width="20" height="12" rx="2" stroke="#3b82f6" stroke-width="1.5"/>
-  <rect x="9" y="13" width="3" height="6" rx="1" fill="#3b82f6"/>
-  <rect x="14" y="13" width="3" height="6" rx="1" fill="#6366f1"/>
-  <rect x="19" y="13" width="3" height="6" rx="1" fill="#10b981"/>
-  <line x1="10" y1="8" x2="10" y2="10" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="16" y1="8" x2="16" y2="10" stroke="#6366f1" stroke-width="1.5"/>
-  <line x1="22" y1="8" x2="22" y2="10" stroke="#10b981" stroke-width="1.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- White background -->
+  <rect width="32" height="32" fill="#FFFFFF"/>
+  <!-- Ink border -->
+  <rect x="0" y="0" width="32" height="2" fill="#3B3B3B"/>
+  <rect x="0" y="30" width="32" height="2" fill="#3B3B3B"/>
+  <rect x="0" y="0" width="2" height="32" fill="#3B3B3B"/>
+  <rect x="30" y="0" width="2" height="32" fill="#3B3B3B"/>
+  <!-- Teal isometric cube -->
+  <!-- Top face -->
+  <polygon points="16,8 24,12 16,16 8,12" fill="#03CDD7"/>
+  <!-- Left face -->
+  <polygon points="8,12 16,16 16,24 8,20" fill="#029BA3"/>
+  <!-- Right face -->
+  <polygon points="24,12 16,16 16,24 24,20" fill="#02B8C1"/>
 </svg>
