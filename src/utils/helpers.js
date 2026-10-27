@@ -3,10 +3,10 @@
  */
 
 export function getRiskColor(score) {
-  if (score <= 30) return '#10b981'
-  if (score <= 50) return '#f59e0b'
-  if (score <= 70) return '#f97316'
-  return '#ef4444'
+  if (score <= 30) return '#4AB0E8'
+  if (score <= 50) return '#60C860'
+  if (score <= 70) return '#F4A020'
+  return '#E03838'
 }
 
 export function getRiskCategory(score) {
@@ -17,10 +17,17 @@ export function getRiskCategory(score) {
 }
 
 export function getRiskBgColor(score) {
-  if (score <= 30) return 'rgba(16, 185, 129, 0.15)'
-  if (score <= 50) return 'rgba(245, 158, 11, 0.15)'
-  if (score <= 70) return 'rgba(249, 115, 22, 0.15)'
-  return 'rgba(239, 68, 68, 0.15)'
+  if (score <= 30) return '#E0F4FD'
+  if (score <= 50) return '#E8F8E8'
+  if (score <= 70) return '#FDF3E0'
+  return '#FDE8E8'
+}
+
+export function getRiskLevel(score) {
+  if (score <= 30) return 'low'
+  if (score <= 50) return 'moderate'
+  if (score <= 70) return 'high'
+  return 'critical'
 }
 
 export function formatScore(n) {
