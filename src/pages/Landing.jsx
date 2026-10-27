@@ -201,8 +201,10 @@ export default function Landing() {
                 className="space-y-4 w-full"
               >
                 <h1 className="font-pixel text-2xl sm:text-3xl text-ink leading-snug">
-                  Every AI query has a hidden cost.<br />
-                  <span className="text-glow-cube" style={{ color: '#03CDD7' }}>DCEI measures it.</span>
+                  Every AI query has a{' '}
+                  <span className="text-glow-cube" style={{ color: '#03CDD7' }}>hidden cost.</span>
+                  <br />
+                  Let us show you.
                 </h1>
                 <p className="font-mono text-sm text-ink-soft">
                   One message. 1.2 L of water. 4.2 g of CO₂. Multiplied by 8.5 billion queries a day.
@@ -479,7 +481,8 @@ export default function Landing() {
           <div className="mb-8">
             <p className="font-mono text-[10px] text-ink-soft uppercase tracking-widest mb-1">the framework</p>
             <h2 className="font-pixel text-xl text-ink mb-2">
-              DCEI measures what other frameworks skip.
+              DCEI measures{' '}
+              <span className="text-glow-cube" style={{ color: '#03CDD7' }}>what no one is measuring.</span>
             </h2>
             <p className="font-mono text-sm text-ink-soft max-w-2xl">
               A composite environmental suitability index for data center site selection in India.
@@ -529,10 +532,10 @@ export default function Landing() {
             <p className="font-mono text-[10px] text-ink-soft uppercase tracking-widest">enter the dashboard</p>
 
             <h2 className="font-pixel text-3xl sm:text-4xl text-ink leading-tight">
-              50 cities. 4 indices.<br />Open methodology.
+              Explore 50 cities.<br />4 indices. Zero greenwashing.
             </h2>
             <p className="font-mono text-sm text-ink-soft">
-              Government data. Transparent weights. Published on Zenodo.
+              Real government data. Transparent methodology. Honest scores.
             </p>
 
             <div className="flex flex-wrap gap-4 justify-center">
@@ -571,14 +574,6 @@ export default function Landing() {
             </Panel>
           </div>
 
-          {/* Scroll to top */}
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="absolute bottom-4 right-4 border border-ink/30 p-2 text-ink-soft hover:text-ink hover:border-ink transition-colors duration-120"
-            aria-label="Back to top"
-          >
-            <PixelGlyph name="arrow-left" size={8} color="currentColor" style={{ transform: 'rotate(90deg)' }} />
-          </button>
         </div>
       </Scene>
     </motion.div>

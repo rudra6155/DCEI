@@ -1,22 +1,52 @@
-# COPY PROPOSALS
+# Copy Proposals — Awaiting Approval
 
-Lines where the copy reads like AI marketing. Collected per the brief (section 8). All changes await approval — nothing is changed until you say so. Lowercasing of headers is a visual change and is already included in the redesign without needing approval here.
+These are the proposed alternative copy strings for Landing.jsx.
+All strings below are proposals only. The main copy (restored to original) is live until approved.
+
+## Proposals submitted 2026-10-27
+
+### Scene 1 — Hero subtitle (replaces "Every AI query has a hidden cost. Let us show you.")
+
+**Proposal A:**
+> every AI query has a hidden cost.  
+> **DCEI measures it.**
+
+Rationale: Preserves the original question hook, adds DCEI as the answer. "measures it" creates contrast with the preceding statement.
 
 ---
 
-## Proposals
+### Scene 5 — Framework headline (replaces "DCEI measures what no one is measuring.")
 
-| # | File | Line | Current text | Proposed replacement | Reason |
-|---|---|---|---|---|---|
-| 1 | `src/pages/Landing.jsx` | ~735 | `We built DCEI to measure what no one is measuring.` | `DCEI measures what other frameworks skip.` | "We built" on a solo project sounds grandiose; "what no one is measuring" is an unverifiable claim |
-| 2 | `src/pages/Landing.jsx` | ~809 | `Explore 50 cities. 4 indices. Zero greenwashing.` | `50 cities. 4 indices. Open methodology.` | "Zero greenwashing" is a marketing claim about itself; "open methodology" is verifiable |
-| 3 | `src/pages/Landing.jsx` | ~811 | `Real government data. Transparent methodology. Honest scores.` | `Government data. Transparent weights. Published on Zenodo.` | "Honest scores" is self-congratulatory; the Zenodo fact is more concrete |
-| 4 | `src/pages/Landing.jsx` | ~19 (OG description) | `Every AI query has a hidden cost. We built DCEI to measure it.` | `Every AI query has a hidden cost. DCEI measures it.` | Same as #1 — solo project, "We built" is off |
+**Proposal B:**
+> DCEI measures what other frameworks skip.
+
+Rationale: More specific than "no one is measuring" — implies peer comparison, which is relevant to research positioning.
 
 ---
 
-## Awaiting approval
+### Scene 6 — CTA headline (replaces "Explore 50 cities. 4 indices. Zero greenwashing.")
 
-All 4 above. Lowercasing of section headings (Scene labels, card headings) is visual-only and does not need approval.
+**Proposal C:**
+> 50 cities. 4 indices. open methodology.
 
-Note: the single emoji removal (`🤔` at end of the typed chat message in Landing.jsx scene 1) is already covered in the brief as an explicitly allowed change and does not need separate approval.
+Rationale: Drops "Explore" (imperative) in favor of a factual statement. "open methodology" is more precise than "Zero greenwashing".
+
+---
+
+### Scene 6 — CTA subline (replaces "Real government data. Transparent methodology. Honest scores.")
+
+**Proposal D:**
+> Government data. Transparent weights. Published on Zenodo.
+
+Rationale: "Published on Zenodo" is a verifiable, concrete claim. "Transparent weights" is more technically specific than "Transparent methodology".
+
+---
+
+## Status
+
+| Proposal | Status |
+|---|---|
+| A — "DCEI measures it." | Awaiting approval |
+| B — "other frameworks skip" | Awaiting approval |
+| C — "open methodology" | Awaiting approval |
+| D — "Published on Zenodo" | Awaiting approval |
