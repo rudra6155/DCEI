@@ -6,10 +6,11 @@
  *   className
  *   children
  */
-export default function Panel({ inset = false, className = '', children }) {
-  const bg = inset ? 'bg-paper-3' : 'bg-paper'
+export default function Panel({ inset = false, className = '', children, style }) {
+  const bg       = inset ? 'bg-paper-3' : 'bg-paper'
+  const insetCls = inset ? 'panel--inset' : ''
   return (
-    <div className={`panel border border-ink ${bg} ${className}`}>
+    <div className={`panel border border-ink ${bg} ${insetCls} ${className}`} style={style}>
       {children}
     </div>
   )

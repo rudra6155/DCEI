@@ -17,6 +17,7 @@
   --select:       #FFD275;
   --cube:         #03CDD7;
   --pink-accent:  #FDA9B6;
+  --pink-hot:     #FF3D8F;
   --risk-low:      #4AB0E8;
   --risk-moderate: #60C860;
   --risk-high:     #F4A020;
@@ -97,17 +98,35 @@
 
 /* ─────────────────────────────────────────────────────────────
    Panel — rectangle, 2px ink border, paper background
+   EDGE glow: medium cyan border bloom on all panels
    ───────────────────────────────────────────────────────────── */
 .panel {
   background: var(--paper);
   border: 2px solid var(--ink);
   padding: 1rem;
+  box-shadow:
+    0 0 0 1px rgba(3,205,215,0.22),
+    0 0 18px rgba(3,205,215,0.12);
 }
 
 .panel--inset {
   background: var(--paper-2);
   border: 2px solid var(--ink);
   padding: 1rem;
+  box-shadow: none; /* nested panels don't double-glow */
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Text glow utilities — EDGE bloom on colored numbers/labels
+   ───────────────────────────────────────────────────────────── */
+.text-glow-cube {
+  text-shadow: 0 0 10px rgba(3,205,215,0.65), 0 0 24px rgba(3,205,215,0.30);
+}
+.text-glow-pink {
+  text-shadow: 0 0 10px rgba(255,61,143,0.65), 0 0 24px rgba(255,61,143,0.30);
+}
+.text-glow-score {
+  text-shadow: 0 0 8px currentColor;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -333,6 +352,17 @@
 .dashed-btn:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
+}
+
+/* Per-variant permanent glow — EDGE feel */
+.dashed-btn--neutral {
+  box-shadow: 0 0 0 1px rgba(3,205,215,0.32), 0 0 14px rgba(3,205,215,0.16);
+}
+.dashed-btn--lavender {
+  box-shadow: 0 0 0 2px rgba(211,169,253,0.55), 0 0 20px rgba(211,169,253,0.28);
+}
+.dashed-btn--focus {
+  box-shadow: 0 0 0 2px rgba(97,246,144,0.55), 0 0 20px rgba(97,246,144,0.28);
 }
 
 /* ─────────────────────────────────────────────────────────────

@@ -18,6 +18,12 @@ const BG = {
   focus:    'bg-band-focus',
 }
 
+const GLOW_CLS = {
+  neutral:  'dashed-btn--neutral',
+  lavender: 'dashed-btn--lavender',
+  focus:    'dashed-btn--focus',
+}
+
 export default function DashedBtn({
   variant   = 'neutral',
   onClick,
@@ -37,6 +43,7 @@ export default function DashedBtn({
         'border-2 border-dashed border-ink',
         'transition-colors duration-120 ease-step-1',
         BG[variant] || BG.neutral,
+        GLOW_CLS[variant] || GLOW_CLS.neutral,
         disabled ? 'opacity-40 cursor-not-allowed' : 'hover:border-band-primary active:border-band-focus',
         className,
       ].join(' ')}

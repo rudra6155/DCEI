@@ -64,13 +64,15 @@ function TypingText({ text, delay = 0, speed = 50, onComplete }) {
 
 // ─── StatCard — panel with score counter ─────────────────────────────────────
 function StatCard({ glyphName, title, value, suffix, sub, riskLevel = 'moderate' }) {
+  const numColor = riskLevel === 'critical' ? '#FF3D8F' : riskLevel === 'high' ? '#F4A020' : '#03CDD7'
+  const glowCls  = riskLevel === 'critical' ? 'text-glow-pink' : riskLevel === 'high' ? '' : 'text-glow-cube'
   return (
     <Panel className="p-4 flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <PixelGlyph name={glyphName} size={12} color="#3B3B3B" />
         <span className="font-mono text-[10px] text-ink-soft uppercase tracking-wider">{title}</span>
       </div>
-      <p className="font-pixel text-2xl text-ink leading-none">
+      <p className={`font-num text-4xl leading-none ${glowCls}`} style={{ color: numColor }}>
         {value}<span className="font-mono text-sm text-ink-soft ml-1">{suffix}</span>
       </p>
       <SegMeter value={riskLevel === 'high' ? 75 : riskLevel === 'critical' ? 90 : 50} riskLevel={riskLevel} size={8} gap={1} />
@@ -200,7 +202,7 @@ export default function Landing() {
               >
                 <h1 className="font-pixel text-2xl sm:text-3xl text-ink leading-snug">
                   Every AI query has a hidden cost.<br />
-                  <span style={{ color: '#03CDD7' }}>DCEI measures it.</span>
+                  <span className="text-glow-cube" style={{ color: '#03CDD7' }}>DCEI measures it.</span>
                 </h1>
                 <p className="font-mono text-sm text-ink-soft">
                   One message. 1.2 L of water. 4.2 g of CO₂. Multiplied by 8.5 billion queries a day.
@@ -361,16 +363,19 @@ export default function Landing() {
           {/* Scale-up panel */}
           <Panel className="p-5">
             <p className="font-pixel text-sm text-ink mb-4">
-              India processes <span style={{ color: '#F4A020' }}>8.5 billion</span> AI queries daily.
+              India processes <span className="text-glow-pink" style={{ color: '#FF3D8F' }}>8.5 billion</span> AI queries daily.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { label: 'Water/day',       value: '10.2B liters', level: 'high'     },
-                { label: 'Electricity/day', value: '59.5M kWh',   level: 'moderate' },
-                { label: 'CO₂/day',         value: '35.7B grams', level: 'critical' },
+                { label: 'Water/day',       value: '10.2 Billion L',  level: 'high'     },
+                { label: 'Electricity/day', value: '59.5 M kWh',      level: 'moderate' },
+                { label: 'CO₂/day',         value: '35.7 Billion g',  level: 'critical' },
               ].map((item) => (
                 <div key={item.label}>
-                  <p className="font-pixel text-lg text-ink">{item.value}</p>
+                  <p className={`font-num text-3xl leading-none ${item.level === 'critical' ? 'text-glow-pink' : item.level === 'high' ? '' : 'text-glow-cube'}`}
+                     style={{ color: item.level === 'critical' ? '#FF3D8F' : item.level === 'high' ? '#F4A020' : '#03CDD7' }}>
+                    {item.value}
+                  </p>
                   <SegMeter value={item.level === 'critical' ? 95 : item.level === 'high' ? 75 : 55} riskLevel={item.level} size={8} gap={1} className="my-1" />
                   <p className="font-mono text-[10px] text-ink-soft uppercase tracking-wider">{item.label}</p>
                 </div>
@@ -446,13 +451,16 @@ export default function Landing() {
             {/* Stat cards */}
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { num: '358B',  label: 'litres/year by 2030',       desc: 'Projected annual DC water use — equal to 143,000 Olympic pools',                             bar: 78, level: 'high'     },
-                { num: '13.6GW', label: 'electricity demand by 2032', desc: 'Equivalent to the entire installed capacity of Kerala + Tamil Nadu combined',               bar: 65, level: 'moderate' },
-                { num: '60–80%', label: 'DCs in high water stress zones', desc: 'Indian data centers operating in semi-critical or worse CGWB categories',              bar: 70, level: 'high'     },
-                { num: '70+',   label: 'DCs in water-scarce Mumbai',  desc: "Mumbai — Semi-Critical groundwater, 2,700 CDD — hosts India's densest DC cluster",         bar: 90, level: 'critical' },
+                { num: '358 Billion', label: 'litres/year by 2030',       desc: 'Projected annual DC water use — equal to 143,000 Olympic pools',                       bar: 78, level: 'high'     },
+                { num: '13.6 GW',    label: 'electricity demand by 2032', desc: 'Equivalent to the entire installed capacity of Kerala + Tamil Nadu combined',           bar: 65, level: 'moderate' },
+                { num: '60–80%',     label: 'DCs in high water stress',   desc: 'Indian data centers operating in semi-critical or worse CGWB categories',              bar: 70, level: 'high'     },
+                { num: '70+',        label: 'DCs in water-scarce Mumbai', desc: "Mumbai — Semi-Critical groundwater, 2,700 CDD — hosts India's densest DC cluster",     bar: 90, level: 'critical' },
               ].map((s, i) => (
                 <Panel key={i} className="p-4">
-                  <p className="font-pixel text-xl text-ink mb-1">{s.num}</p>
+                  <p className={`font-num text-3xl leading-none mb-1 ${s.level === 'critical' ? 'text-glow-pink' : s.level === 'moderate' ? 'text-glow-cube' : ''}`}
+                     style={{ color: s.level === 'critical' ? '#FF3D8F' : s.level === 'high' ? '#F4A020' : '#03CDD7' }}>
+                    {s.num}
+                  </p>
                   <p className="font-mono text-xs text-ink mb-1">{s.label}</p>
                   <p className="font-mono text-[10px] text-ink-soft mb-2 leading-relaxed">{s.desc}</p>
                   <SegMeter value={s.bar} riskLevel={s.level} size={8} gap={1} />
@@ -539,14 +547,14 @@ export default function Landing() {
             {/* Stats row */}
             <div className="flex flex-wrap justify-center gap-6 pt-4">
               {[
-                { n: '50',   label: 'Cities'            },
-                { n: '16+',  label: 'Variables'         },
-                { n: '4',    label: 'Sub-Indices'       },
-                { n: '100%', label: 'Government Data'   },
+                { n: '50',   label: 'Cities',          color: '#03CDD7', glow: 'text-glow-cube' },
+                { n: '16+',  label: 'Variables',       color: '#F4A020', glow: '' },
+                { n: '4',    label: 'Sub-Indices',     color: '#FF3D8F', glow: 'text-glow-pink' },
+                { n: '100%', label: 'Government Data', color: '#60C860', glow: '' },
               ].map((s, i) => (
                 <div key={i} className="text-center">
-                  <p className="font-pixel text-2xl text-ink">{s.n}</p>
-                  <p className="font-mono text-[10px] text-ink-soft uppercase tracking-wider">{s.label}</p>
+                  <p className={`font-num text-4xl leading-none ${s.glow}`} style={{ color: s.color }}>{s.n}</p>
+                  <p className="font-mono text-[10px] text-ink-soft uppercase tracking-wider mt-0.5">{s.label}</p>
                 </div>
               ))}
             </div>

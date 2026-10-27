@@ -31,7 +31,8 @@ export default {
         cube:           '#03CDD7',   // the teal cube
 
         // ── Game accents ──
-        'pink-accent':  '#FDA9B6',   // decorative pink
+        'pink-accent':  '#FDA9B6',   // soft pink (viewport frame rainbow)
+        'pink-hot':     '#FF3D8F',   // EDGE hot-pink (danger tiles, accent)
         'btn-neutral':  '#EDEDEB',   // neutral button fill
         'btn-lavender': '#EADFFD',   // secondary button fill
 
@@ -46,6 +47,7 @@ export default {
         pixel: ['"Pixelify Sans"', 'monospace'],
         mono:  ['"Space Mono"', 'ui-monospace', 'monospace'],
         sans:  ['"Space Mono"', 'ui-monospace', 'monospace'],
+        num:   ['"VT323"', 'monospace'],  // CRT pixel font — clean, readable digit glyphs
       },
 
       animation: {
