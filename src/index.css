@@ -11,18 +11,24 @@
   --paper-3:      #F0F0EE;
   --bar:          #7D7D7D;
   --ink:          #3B3B3B;
-  --ink-soft:     #818181;
+  --ink-soft:     #7D7D7D;
   --band-primary: #D3A9FD;
-  --band-focus:   #61F690;
+  --band-focus:   #5EFB90;
+  --band-teal:    #69EACE;
   --select:       #FFD275;
-  --cube:         #03CDD7;
-  --pink-accent:  #FDA9B6;
-  --pink-hot:     #FF3D8F;
+  --cube:         #9D55FF;
+  --cube-dark:    #3901AA;
+  --well:         #A9A9A9;
+  --tile-light:   #CECECE;
+  --panel-grey:   #D2D2D2;
+  --lime:         #C7F439;
+  --pink-accent:  #FDA9B8;
+  --s-rank:       #FEB39C;
+  --footer-strip: #3C3C3C;
   --risk-low:      #4AB0E8;
   --risk-moderate: #60C860;
   --risk-high:     #F4A020;
   --risk-critical: #E03838;
-  --frame-colors: #FDA9B6, #D3A9FD, #4AB0E8, #61F690, #FFD275, #03CDD7, #FCD8BE, #C3F69A;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -50,8 +56,8 @@
   *, *::before, *::after { border-radius: 0 !important; }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Pixelify Sans', monospace;
-    font-weight: 700;
+    font-family: 'Micro 5', 'Pixelify Sans', monospace;
+    font-weight: 400;
     text-transform: lowercase;
   }
 }
@@ -69,13 +75,13 @@
     linear-gradient(var(--paper), var(--paper)) padding-box,
     repeating-linear-gradient(
       to right,
-      #FDA9B6 0px, #FDA9B6 8px,
-      #D3A9FD 8px, #D3A9FD 16px,
+      #FDA9B8 0px,  #FDA9B8 8px,
+      #D3A9FD 8px,  #D3A9FD 16px,
       #BEB8FE 16px, #BEB8FE 24px,
       #4AB0E8 24px, #4AB0E8 32px,
-      #61F690 32px, #61F690 40px,
+      #5EFB90 32px, #5EFB90 40px,
       #FFD275 40px, #FFD275 48px,
-      #03CDD7 48px, #03CDD7 56px,
+      #69EACE 48px, #69EACE 56px,
       #C3F69A 56px, #C3F69A 64px
     ) border-box;
 }
@@ -87,7 +93,7 @@
   width: 100%;
   background: var(--bar);
   color: var(--paper);
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 1rem;
   font-weight: 400;
   text-transform: lowercase;
@@ -97,36 +103,36 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Panel — rectangle, 2px ink border, paper background
-   EDGE glow: medium cyan border bloom on all panels
+   Floor header bar — inline section divider (same style as page-header-bar)
+   ───────────────────────────────────────────────────────────── */
+.floor-bar {
+  width: 100%;
+  background: var(--bar);
+  color: var(--paper);
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
+  font-size: 1.125rem;
+  font-weight: 400;
+  text-transform: lowercase;
+  padding: 0.625rem 1rem;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: 0.03em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Panel — rectangle, 1px ink border, paper background
+   No shadows — BANNED per correction doc
    ───────────────────────────────────────────────────────────── */
 .panel {
   background: var(--paper);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
   padding: 1rem;
-  box-shadow:
-    0 0 0 1px rgba(3,205,215,0.22),
-    0 0 18px rgba(3,205,215,0.12);
 }
 
 .panel--inset {
   background: var(--paper-2);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
   padding: 1rem;
-  box-shadow: none; /* nested panels don't double-glow */
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Text glow utilities — EDGE bloom on colored numbers/labels
-   ───────────────────────────────────────────────────────────── */
-.text-glow-cube {
-  text-shadow: 0 0 10px rgba(3,205,215,0.65), 0 0 24px rgba(3,205,215,0.30);
-}
-.text-glow-pink {
-  text-shadow: 0 0 10px rgba(255,61,143,0.65), 0 0 24px rgba(255,61,143,0.30);
-}
-.text-glow-score {
-  text-shadow: 0 0 8px currentColor;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -137,7 +143,7 @@
   align-items: center;
   width: 100%;
   padding: 0.75rem 1rem;
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 1rem;
   text-transform: lowercase;
   color: var(--ink);
@@ -161,7 +167,7 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Options row — label left, value right; lime band when focused
+   Options row — label left, value right; mint band when focused
    ───────────────────────────────────────────────────────────── */
 .options-row {
   display: flex;
@@ -185,13 +191,44 @@
 }
 
 .options-row__label {
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 0.875rem;
   text-transform: lowercase;
   color: var(--ink);
 }
 
 .options-row__value {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.875rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Level-done row — label/value pair in the result table style
+   ───────────────────────────────────────────────────────────── */
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--paper-2);
+  background: var(--paper);
+}
+
+.result-row.highlight {
+  background: var(--select);
+}
+
+.result-row__label {
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
+  font-size: 0.875rem;
+  text-transform: lowercase;
+  color: var(--ink);
+}
+
+.result-row__value {
   font-family: 'Space Mono', monospace;
   font-size: 0.875rem;
   color: var(--ink);
@@ -227,7 +264,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
   background: var(--paper);
   padding: 0.5rem 1rem;
 }
@@ -242,7 +279,7 @@
 }
 
 .score-readout__label {
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 0.75rem;
   text-transform: lowercase;
   color: var(--ink-soft);
@@ -255,7 +292,7 @@
 .level-tile {
   position: relative;
   aspect-ratio: 1;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
   background: var(--paper);
   cursor: pointer;
   display: flex;
@@ -284,9 +321,9 @@
 }
 
 .level-tile__number {
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 400;
   color: var(--ink);
   line-height: 1;
 }
@@ -314,14 +351,15 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Dashed button — pastel fill, rainbow dashed border
+   Dashed button — pastel fill, dashed ink border
+   No glow — BANNED per correction doc
    ───────────────────────────────────────────────────────────── */
 .dashed-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.625rem 1.25rem;
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 0.875rem;
   font-weight: 400;
   text-transform: lowercase;
@@ -354,17 +392,6 @@
   outline-offset: 2px;
 }
 
-/* Per-variant permanent glow — EDGE feel */
-.dashed-btn--neutral {
-  box-shadow: 0 0 0 1px rgba(3,205,215,0.32), 0 0 14px rgba(3,205,215,0.16);
-}
-.dashed-btn--lavender {
-  box-shadow: 0 0 0 2px rgba(211,169,253,0.55), 0 0 20px rgba(211,169,253,0.28);
-}
-.dashed-btn--focus {
-  box-shadow: 0 0 0 2px rgba(97,246,144,0.55), 0 0 20px rgba(97,246,144,0.28);
-}
-
 /* ─────────────────────────────────────────────────────────────
    Band CTA — full-bleed primary band button
    ───────────────────────────────────────────────────────────── */
@@ -374,7 +401,7 @@
   padding: 1rem;
   background: var(--band-primary);
   color: var(--ink);
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 1rem;
   text-transform: lowercase;
   text-decoration: none;
@@ -389,6 +416,21 @@
 
 .band-cta:hover {
   background: #C490F0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Footer strip — dark bar at page bottom
+   ───────────────────────────────────────────────────────────── */
+.footer-strip {
+  width: 100%;
+  background: var(--footer-strip);
+  color: var(--paper);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.625rem;
+  padding: 0.5rem 1rem;
+  border-top: 2px solid var(--ink);
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -410,7 +452,7 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Page transition — 150ms linear slide
+   Page transition — 150ms linear
    ───────────────────────────────────────────────────────────── */
 .page-transition {
   min-height: 100dvh;
@@ -429,7 +471,7 @@
 .dc-table th {
   background: var(--bar);
   color: var(--paper);
-  font-family: 'Pixelify Sans', monospace;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 0.75rem;
   font-weight: 400;
   text-transform: lowercase;
@@ -469,10 +511,10 @@
   display: inline-flex;
   align-items: center;
   padding: 2px 6px;
-  border: 2px solid currentColor;
-  font-family: 'Pixelify Sans', monospace;
+  border: 1px solid currentColor;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace;
   font-size: 0.625rem;
-  font-weight: 700;
+  font-weight: 400;
   text-transform: lowercase;
   letter-spacing: 0;
   white-space: nowrap;
@@ -488,7 +530,7 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Leaflet overrides — light theme, no dark filter
+   Leaflet overrides — light theme, no shadow
    ───────────────────────────────────────────────────────────── */
 .leaflet-container {
   background: var(--paper) !important;
@@ -497,7 +539,7 @@
 
 .leaflet-popup-content-wrapper {
   background: var(--paper) !important;
-  border: 2px solid var(--ink) !important;
+  border: 1px solid var(--ink) !important;
   color: var(--ink) !important;
   box-shadow: none !important;
 }
@@ -524,20 +566,19 @@
   background: var(--paper) !important;
   color: var(--ink) !important;
   border-color: var(--ink) !important;
-  font-family: 'Pixelify Sans', monospace !important;
+  font-family: 'Micro 5', 'Pixelify Sans', monospace !important;
 }
 
 .leaflet-control-zoom a:hover {
   background: var(--paper-2) !important;
 }
 
-/* NO tile filter — use light tiles directly */
 .leaflet-tile-pane {
   filter: none;
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Recharts overrides — ink colors, no glow
+   Recharts overrides — ink colors
    ───────────────────────────────────────────────────────────── */
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical line {
@@ -601,7 +642,7 @@ select {
   -webkit-appearance: none;
   appearance: none;
   background: var(--paper);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
   color: var(--ink);
   font-family: 'Space Mono', monospace;
   font-size: 0.875rem;
@@ -638,7 +679,7 @@ select:focus-visible {
    ───────────────────────────────────────────────────────────── */
 .formula-block {
   background: var(--paper-2);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--ink);
   padding: 1rem;
   font-family: 'Space Mono', monospace;
   font-size: 0.8125rem;
@@ -648,7 +689,7 @@ select:focus-visible {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Focus visible — lime band outline
+   Focus visible — mint band outline
    ───────────────────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--band-focus);
@@ -666,7 +707,7 @@ select:focus-visible {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Safe area insets for mobile
+   Safe area insets
    ───────────────────────────────────────────────────────────── */
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);

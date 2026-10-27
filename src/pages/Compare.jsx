@@ -25,7 +25,7 @@ const PAGE_TRANSITION = {
 }
 
 // Colors that work on the light paper background
-const CITY_COLORS = ['#03CDD7', '#D3A9FD', '#F4A020']
+const CITY_COLORS = ['#9D55FF', '#D3A9FD', '#F4A020']
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null

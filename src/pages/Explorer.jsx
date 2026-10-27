@@ -287,7 +287,7 @@ export default function Explorer() {
                         <span className="flex items-center gap-1">
                           {f.label}
                           {sortField === f.key && (
-                            <span style={{ color: '#61F690' }}>
+                            <span style={{ color: '#5EFB90' }}>
                               {sortDir === 'asc' ? '↑' : '↓'}
                             </span>
                           )}

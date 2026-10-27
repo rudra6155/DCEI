@@ -170,7 +170,7 @@ export default function Alternatives() {
                 <Fragment key={alt.id}>
                   <Polyline
                     positions={[[sourceCity.lat, sourceCity.lon], [alt.lat, alt.lon]]}
-                    pathOptions={{ color: '#03CDD7', weight: 1.5, dashArray: '6 4', opacity: 0.7 }}
+                    pathOptions={{ color: '#9D55FF', weight: 1.5, dashArray: '6 4', opacity: 0.7 }}
                   />
                   <CircleMarker
                     center={[alt.lat, alt.lon]}

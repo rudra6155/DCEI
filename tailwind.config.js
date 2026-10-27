@@ -16,27 +16,43 @@ export default {
     },
     extend: {
       colors: {
-        // ── Base surfaces (measured from reference screenshots) ──
-        paper:      '#FFFFFF',   // page background
-        'paper-2':  '#EDEDEB',   // recessed panels, alt table rows
-        'paper-3':  '#F0F0EE',   // inset wells
-        bar:        '#7D7D7D',   // full-width header bars
-        ink:        '#3B3B3B',   // primary text and borders
-        'ink-soft': '#818181',   // secondary text, labels
+        // ── Base surfaces ──
+        paper:      '#FFFFFF',
+        'paper-2':  '#EDEDEB',
+        'paper-3':  '#F0F0EE',
+        bar:        '#7D7D7D',
+        ink:        '#3B3B3B',
+        'ink-soft': '#7D7D7D',   // unified with bar measurement
 
-        // ── Accent bands (measured) ──
+        // ── Accent bands (pixel-sampled) ──
         'band-primary': '#D3A9FD',   // selected nav/menu row (lavender)
-        'band-focus':   '#61F690',   // focused options row (lime)
+        'band-focus':   '#5EFB90',   // focused options row (mint) — corrected from #61F690
+        'band-teal':    '#69EACE',   // teal band (bonus level screen)
         select:         '#FFD275',   // selected tile / record band (amber)
-        cube:           '#03CDD7',   // the teal cube
+
+        // ── Cube ──
+        cube:        '#9D55FF',   // isometric cube top — purple (corrected from teal)
+        'cube-dark': '#3901AA',   // cube dark face
+        'cube-top':  '#9D55FF',   // alias
+
+        // ── Grey scale tones (pixel-sampled from scores/result screens) ──
+        well:         '#A9A9A9',   // scores screen background well
+        'tile-light': '#CECECE',   // diagonal-split tile light half
+        'panel-grey': '#D2D2D2',   // result screen panel background
 
         // ── Game accents ──
-        'pink-accent':  '#FDA9B6',   // soft pink (viewport frame rainbow)
-        'pink-hot':     '#FF3D8F',   // EDGE hot-pink (danger tiles, accent)
-        'btn-neutral':  '#EDEDEB',   // neutral button fill
-        'btn-lavender': '#EADFFD',   // secondary button fill
+        lime:         '#C7F439',   // lime rank number (result screen)
+        'pink-accent': '#FDA9B8',  // soft pink (viewport frame)
+        's-rank':     '#FEB39C',   // salmon rank letter
 
-        // ── Risk ramp (cool → warm, all WCAG AA on paper) ──
+        // ── Footer ──
+        'footer-strip': '#3C3C3C',
+
+        // ── Button fills ──
+        'btn-neutral':  '#EDEDEB',
+        'btn-lavender': '#EADFFD',
+
+        // ── Risk ramp ──
         'risk-low':      '#4AB0E8',
         'risk-moderate': '#60C860',
         'risk-high':     '#F4A020',
@@ -44,10 +60,9 @@ export default {
       },
 
       fontFamily: {
-        pixel: ['"Pixelify Sans"', 'monospace'],
+        pixel: ['"Micro 5"', '"Pixelify Sans"', 'monospace'],
         mono:  ['"Space Mono"', 'ui-monospace', 'monospace'],
         sans:  ['"Space Mono"', 'ui-monospace', 'monospace'],
-        num:   ['"VT323"', 'monospace'],  // CRT pixel font — clean, readable digit glyphs
       },
 
       animation: {

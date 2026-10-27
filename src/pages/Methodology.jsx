@@ -128,7 +128,7 @@ export default function Methodology() {
                 The <strong>Data Center Environmental Impact (DCEI) Index</strong> is a composite scoring
                 system that quantifies the environmental stress of hosting AI data centers at specific
                 locations in India. It synthesises four primary dimensions into a single{' '}
-                <span style={{ color: '#03CDD7' }}>0–100 score</span>, where{' '}
+                <span style={{ color: '#9D55FF' }}>0–100 score</span>, where{' '}
                 <span style={{ color: '#E03838' }}>higher scores indicate greater environmental risk</span>.
               </p>
               <p>
@@ -255,7 +255,7 @@ Range:       0 ≤ DCEI_Score ≤ 100`}
                     ['Northeastern (NER)', 'Assam and NE states',                           '0.84', '20%'],
                   ].map((r, i) => (
                     <tr key={r[0]} className={i % 2 === 0 ? 'bg-paper' : 'bg-paper-2'}>
-                      <td className="px-2 py-1 border border-ink/10" style={{ color: '#03CDD7' }}>{r[0]}</td>
+                      <td className="px-2 py-1 border border-ink/10" style={{ color: '#9D55FF' }}>{r[0]}</td>
                       <td className="px-2 py-1 border border-ink/10 text-ink">{r[1]}</td>
                       <td className="px-2 py-1 border border-ink/10 text-right" style={{ color: '#F4A020' }}>{r[2]}</td>
                       <td className="px-2 py-1 border border-ink/10 text-right" style={{ color: '#60C860' }}>{r[3]}</td>
@@ -400,7 +400,7 @@ Range:       0 ≤ DCEI_Score ≤ 100`}
               <Panel inset className="p-4 select-all">
                 <p className="font-mono text-sm text-ink leading-relaxed">
                   Singh, R. (2026).{' '}
-                  <span style={{ color: '#03CDD7' }}>DCEI: A Data Center Environmental Impact Index for India</span>
+                  <span style={{ color: '#9D55FF' }}>DCEI: A Data Center Environmental Impact Index for India</span>
                   {' '}— Quantifying Water, Carbon, Community, and Thermal Risk for AI Infrastructure
                   Siting Across 50 Indian Cities.{' '}
                   <span style={{ color: '#60C860' }}>Zenodo</span>.{' '}

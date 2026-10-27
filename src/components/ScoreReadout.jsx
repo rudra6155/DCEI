@@ -68,8 +68,8 @@ export default function ScoreReadout({
   const color = RISK_COLOR[riskLevel] || RISK_COLOR.moderate
 
   return (
-    <div className={`score-readout font-num leading-none ${SIZE_CLS[size] || SIZE_CLS.md} ${className}`}>
-      <span className="text-glow-score" style={{ color }}>{String(displayed).padStart(2, '0')}</span>
+    <div className={`score-readout font-mono leading-none ${SIZE_CLS[size] || SIZE_CLS.md} ${className}`}>
+      <span style={{ color }}>{String(displayed).padStart(2, '0')}</span>
       {label && (
         <span className="block text-xs font-mono text-ink-soft mt-1 tracking-widest uppercase">
           {label}
